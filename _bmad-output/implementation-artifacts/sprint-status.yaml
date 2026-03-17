@@ -1,0 +1,89 @@
+# generated: 2026-03-17T17:51:51+09:00
+# last_updated: 2026-03-17T17:53:59+09:00
+# project: bmad_test
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: "{project-root}/_bmad-output/implementation-artifacts"
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-03-17T17:51:51+09:00
+last_updated: 2026-03-17T17:53:59+09:00
+project: bmad_test
+project_key: NOKEY
+tracking_system: file-system
+story_location: "{project-root}/_bmad-output/implementation-artifacts"
+
+development_status:
+  # Epic 1: 프로젝트 초기화 및 앱 기반 구축
+  epic-1: in-progress
+  1-1-tauri-2-프로젝트-초기화-및-개발-환경-구성: ready-for-dev
+  1-2-디자인-토큰-시스템-및-공통-ui-기반-구축: backlog
+  1-3-앱-셸-내비게이션-및-라우팅-구현: backlog
+  1-4-sqlite-데이터베이스-초기화-및-마이그레이션-시스템: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: 주제 생성 및 관리
+  epic-2: backlog
+  2-1-주제-도메인-모델-및-저장소-구현: backlog
+  2-2-주제-생성-및-목록-화면-구현: backlog
+  2-3-주제-수정-및-정리-기능: backlog
+  2-4-빠른-주제-선택-패널-구현: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: 학습 세션 실행 및 기록
+  epic-3: backlog
+  3-1-세션-도메인-모델-및-저장소-구현: backlog
+  3-2-포모도로-타이머-및-집중-모드-ui-구현: backlog
+  3-3-세션-완료-및-자동-기록-저장: backlog
+  3-4-휴식-세션-및-학습-휴식-전환: backlog
+  3-5-세션-중단-및-회복-플로우: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: 주간 목표 설정 및 진행 추적
+  epic-4: backlog
+  4-1-주간-목표-도메인-모델-및-저장소-구현: backlog
+  4-2-주간-목표-설정-ui-구현: backlog
+  4-3-주간-목표-대비-진행-상태-표시: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: 대시보드 및 통계
+  epic-5: backlog
+  5-1-통계-도메인-모델-및-쿼리-구현: backlog
+  5-2-홈-대시보드-study-status-summary-card: backlog
+  5-3-통계-화면-구현: backlog
+  5-4-세션-완료-후-통계-즉시-갱신: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: 기록 정정 및 데이터 신뢰성
+  epic-6: backlog
+  6-1-세션-기록-목록-및-주제-수정-기능: backlog
+  6-2-기록-수정-후-통계-재계산: backlog
+  epic-6-retrospective: optional
