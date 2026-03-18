@@ -1,0 +1,110 @@
+/* MainNavigation — 사이드바 내비게이션 스타일 */
+
+.nav {
+  background-color: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border-default);
+  width: 220px;
+  padding: var(--spacing-4) 0;
+  flex-shrink: 0;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: background-color var(--transition-fast),
+    color var(--transition-fast);
+  border-radius: var(--radius-md);
+  margin: 0 var(--spacing-2);
+}
+
+.link:hover {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+.link:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.active {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.icon {
+  font-size: var(--font-size-lg);
+  line-height: 1;
+}
+
+.label {
+  line-height: var(--line-height-normal);
+}
+
+/* Wide Desktop (≥1200px) — 사이드바 넓게 */
+@media (min-width: 1200px) {
+  .nav {
+    width: 260px;
+    padding: var(--spacing-6) 0;
+  }
+
+  .link {
+    padding: var(--spacing-3) var(--spacing-5);
+    font-size: var(--font-size-base);
+    margin: 0 var(--spacing-3);
+  }
+}
+
+/* Compact Window (<800px) — 하단 탭 바로 전환 */
+@media (max-width: 799px) {
+  .nav {
+    width: 100%;
+    border-right: none;
+    border-top: 1px solid var(--color-border-default);
+    padding: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--color-bg-primary);
+    z-index: var(--z-sticky);
+    box-shadow: 0 -2px 8px hsla(210, 14%, 10%, 0.08);
+  }
+
+  .list {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 0;
+  }
+
+  .link {
+    flex-direction: column;
+    gap: var(--spacing-1);
+    padding: var(--spacing-2) var(--spacing-3);
+    margin: 0;
+    border-radius: 0;
+    font-size: var(--font-size-xs);
+    text-align: center;
+    flex: 1;
+  }
+
+  .icon {
+    font-size: var(--font-size-base);
+  }
+}

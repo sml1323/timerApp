@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router";
-import App from "../App";
+import { AppShell } from "./layout";
 import { HomeRoute } from "./routes/HomeRoute";
 import { TopicsRoute } from "./routes/TopicsRoute";
 import { StatsRoute } from "./routes/StatsRoute";
@@ -8,7 +8,7 @@ import { NotFoundRoute } from "./routes/NotFoundRoute";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <AppShell />,
     children: [
       {
         index: true,

@@ -1,0 +1,33 @@
+/* AppShell — 2단 레이아웃: 사이드바(nav) + 메인(content) */
+
+/* 기본: Standard Desktop (800–1199px) */
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  padding: var(--spacing-6);
+  overflow-y: auto;
+}
+
+/* Wide Desktop (≥1200px) — 사이드바 넓게, 콘텐츠 여유롭게 */
+@media (min-width: 1200px) {
+  .content {
+    padding: var(--spacing-8) var(--spacing-10);
+  }
+}
+
+/* Compact Window (<800px) — 사이드바 → 하단 탭 바로 전환 */
+@media (max-width: 799px) {
+  .shell {
+    flex-direction: column;
+  }
+
+  .content {
+    flex: 1;
+    padding: var(--spacing-4);
+    padding-bottom: var(--spacing-16); /* 하단 탭 바 높이만큼 여유 */
+  }
+}
