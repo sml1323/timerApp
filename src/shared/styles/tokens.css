@@ -1,7 +1,172 @@
-/* CSS 변수 (디자인 토큰) - Story 1.2에서 완성 예정 */
+/* ============================================
+   디자인 토큰 시스템
+   Story 1.2: 저채도 블루/틸 중심 차분한 학습 도구 팔레트
+   ============================================ */
 :root {
-  --color-primary: #4a90e2;
-  --color-bg: #ffffff;
-  --color-text: #222222;
-  --spacing-base: 8px;
+  /* ----------------------------------------
+     1. 색상 토큰 — 저채도 블루/틸 중심 팔레트
+     ---------------------------------------- */
+
+  /* --- Primitive Colors --- */
+  --color-blue-50: hsl(210, 30%, 96%);
+  --color-blue-100: hsl(210, 28%, 90%);
+  --color-blue-200: hsl(210, 26%, 80%);
+  --color-blue-300: hsl(210, 24%, 68%);
+  --color-blue-400: hsl(210, 22%, 55%);
+  --color-blue-500: hsl(210, 25%, 45%);
+  --color-blue-600: hsl(210, 28%, 38%);
+  --color-blue-700: hsl(210, 30%, 30%);
+  --color-blue-800: hsl(210, 32%, 22%);
+  --color-blue-900: hsl(210, 34%, 15%);
+
+  --color-teal-50: hsl(180, 20%, 96%);
+  --color-teal-100: hsl(180, 18%, 88%);
+  --color-teal-200: hsl(180, 16%, 76%);
+  --color-teal-300: hsl(180, 18%, 62%);
+  --color-teal-400: hsl(180, 20%, 50%);
+  --color-teal-500: hsl(180, 22%, 42%);
+
+  --color-neutral-0: hsl(0, 0%, 100%);
+  --color-neutral-50: hsl(210, 15%, 97%);
+  --color-neutral-100: hsl(210, 12%, 93%);
+  --color-neutral-200: hsl(210, 10%, 86%);
+  --color-neutral-300: hsl(210, 8%, 76%);
+  --color-neutral-400: hsl(210, 6%, 62%);
+  --color-neutral-500: hsl(210, 6%, 48%);
+  --color-neutral-600: hsl(210, 8%, 38%);
+  --color-neutral-700: hsl(210, 10%, 28%);
+  --color-neutral-800: hsl(210, 12%, 18%);
+  --color-neutral-900: hsl(210, 14%, 10%);
+
+  --color-green-50: hsl(150, 20%, 95%);
+  --color-green-100: hsl(150, 18%, 85%);
+  --color-green-400: hsl(150, 22%, 48%);
+  --color-green-500: hsl(150, 24%, 40%);
+  --color-green-600: hsl(150, 26%, 34%);
+
+  --color-amber-50: hsl(40, 30%, 95%);
+  --color-amber-100: hsl(40, 28%, 85%);
+  --color-amber-400: hsl(40, 35%, 52%);
+  --color-amber-500: hsl(40, 38%, 44%);
+
+  --color-red-50: hsl(0, 25%, 96%);
+  --color-red-100: hsl(0, 22%, 88%);
+  --color-red-400: hsl(0, 45%, 58%);
+  --color-red-500: hsl(0, 48%, 50%);
+  --color-red-600: hsl(0, 50%, 42%);
+
+  /* --- Semantic Colors --- */
+  --color-primary: var(--color-blue-500);
+  --color-primary-hover: var(--color-blue-600);
+  --color-primary-active: var(--color-blue-700);
+  --color-primary-light: var(--color-blue-50);
+
+  --color-secondary: var(--color-teal-400);
+  --color-secondary-hover: var(--color-teal-500);
+  --color-secondary-light: var(--color-teal-50);
+
+  --color-success: var(--color-green-500);
+  --color-success-light: var(--color-green-50);
+
+  --color-warning: var(--color-amber-500);
+  --color-warning-light: var(--color-amber-50);
+
+  --color-error: var(--color-red-500);
+  --color-error-light: var(--color-red-50);
+
+  --color-destructive: var(--color-red-500);
+  --color-destructive-hover: var(--color-red-600);
+  --color-destructive-light: var(--color-red-50);
+
+  /* --- Background Colors --- */
+  --color-bg-primary: var(--color-neutral-0);
+  --color-bg-secondary: var(--color-neutral-50);
+  --color-bg-tertiary: var(--color-neutral-100);
+  --color-bg-elevated: var(--color-neutral-0);
+
+  /* --- Text Colors --- */
+  --color-text-primary: var(--color-neutral-900);
+  --color-text-secondary: var(--color-neutral-600);
+  --color-text-tertiary: var(--color-neutral-400);
+  --color-text-inverse: var(--color-neutral-0);
+  --color-text-disabled: var(--color-neutral-300);
+
+  /* --- Border Colors --- */
+  --color-border-default: var(--color-neutral-200);
+  --color-border-strong: var(--color-neutral-300);
+  --color-border-focus: var(--color-blue-400);
+
+  /* ----------------------------------------
+     2. 타이포그래피 토큰 — 시스템 산세리프
+     ---------------------------------------- */
+  --font-family-base: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: ui-monospace, "SF Mono", "Cascadia Code", "Segoe UI Mono", Menlo, monospace;
+
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-display: 2.5rem; /* 40px — 타이머 숫자, 핵심 수치 */
+
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ----------------------------------------
+     3. Spacing 토큰 — 8px 기반 체계
+     ---------------------------------------- */
+  --spacing-1: 4px;    /* 0.5x */
+  --spacing-2: 8px;    /* 1x */
+  --spacing-3: 12px;   /* 1.5x */
+  --spacing-4: 16px;   /* 2x */
+  --spacing-5: 20px;   /* 2.5x */
+  --spacing-6: 24px;   /* 3x */
+  --spacing-8: 32px;   /* 4x */
+  --spacing-10: 40px;  /* 5x */
+  --spacing-12: 48px;  /* 6x */
+  --spacing-16: 64px;  /* 8x */
+
+  /* ----------------------------------------
+     4. 기타 공통 토큰
+     ---------------------------------------- */
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px hsla(210, 14%, 10%, 0.06);
+  --shadow-md: 0 2px 8px hsla(210, 14%, 10%, 0.08);
+  --shadow-lg: 0 4px 16px hsla(210, 14%, 10%, 0.1);
+
+  /* Transitions */
+  --transition-fast: 120ms ease-in-out;
+  --transition-normal: 200ms ease-in-out;
+  --transition-slow: 300ms ease-in-out;
+
+  /* Focus Ring */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--color-blue-400);
+
+  /* Z-index Scale */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal-backdrop: 300;
+  --z-modal: 400;
+  --z-toast: 500;
 }

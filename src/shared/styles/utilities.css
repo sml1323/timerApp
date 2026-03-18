@@ -1,0 +1,30 @@
+/* ============================================
+   공통 유틸리티 클래스
+   Story 1.2: 접근성 및 레이아웃 유틸
+   ============================================ */
+
+/* 스크린 리더 전용 — 시각적으로 숨기되 접근성 유지 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* sr-only 해제 (포커스 시 표시) */
+.sr-only-focusable:focus,
+.sr-only-focusable:focus-within {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: initial;
+  margin: initial;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}

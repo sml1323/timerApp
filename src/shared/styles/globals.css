@@ -1,6 +1,11 @@
-/* 글로벌 스타일 - Story 1.2에서 완성 예정 */
+/* ============================================
+   전역 스타일
+   Story 1.2: 리셋, 기본 글꼴, 색상, 포커스 링
+   ============================================ */
 @import "./tokens.css";
+@import "./utilities.css";
 
+/* --- CSS Reset --- */
 *,
 *::before,
 *::after {
@@ -9,8 +14,90 @@
   padding: 0;
 }
 
+/* --- 기본 HTML 요소 --- */
+html {
+  font-size: 100%; /* 16px baseline */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 body {
-  font-family: system-ui, -apple-system, sans-serif;
-  color: var(--color-text);
-  background-color: var(--color-bg);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  min-height: 100vh;
+}
+
+/* --- Typography Defaults --- */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+}
+
+h1 { font-size: var(--font-size-3xl); }
+h2 { font-size: var(--font-size-2xl); }
+h3 { font-size: var(--font-size-xl); }
+h4 { font-size: var(--font-size-lg); }
+
+p {
+  line-height: var(--line-height-normal);
+}
+
+small {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* --- Images --- */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* --- Form Defaults --- */
+input, button, textarea, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* --- List Reset --- */
+ul, ol {
+  list-style: none;
+}
+
+/* --- 전역 키보드 포커스 링 (:focus-visible 기반) --- */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* 마우스 클릭 시에는 포커스 링 제거 */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* --- Root Container --- */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
