@@ -22,3 +22,8 @@ export function useSelectedTopic() {
     name: state.selectedTopicName,
   }));
 }
+
+/** 완료된 세션 정보 반환 */
+export function useCompletedSession() {
+  return useSessionStore((state) => state.completedSession);
+}

@@ -1,5 +1,6 @@
 import defaultSvg from '../../../assets/characters/default.svg';
 import loadingSvg from '../../../assets/characters/loading.svg';
+import speakSvg from '../../../assets/characters/speak.svg';
 import styles from './CharacterStatePanel.module.css';
 
 type CharacterState = 'default' | 'loading' | 'speak';
@@ -12,7 +13,7 @@ interface CharacterStatePanelProps {
 const CHARACTER_MAP: Record<CharacterState, string> = {
   default: defaultSvg,
   loading: loadingSvg,
-  speak: defaultSvg, // speak 전용 SVG는 향후 추가
+  speak: speakSvg,
 };
 
 const DEFAULT_MESSAGES: Record<CharacterState, string> = {

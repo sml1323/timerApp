@@ -1,10 +1,11 @@
 import { useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useSessionStore } from './state/sessionStore';
-import { useSessionPhase, useActiveSession, useSelectedTopic } from './state/sessionSelectors';
+import { useSessionPhase, useActiveSession, useSelectedTopic, useCompletedSession } from './state/sessionSelectors';
 import { useSessionClock } from './hooks/useSessionClock';
 import { SessionFocusTimer } from './components/SessionFocusTimer';
 import { CharacterStatePanel } from './components/CharacterStatePanel';
+import { SessionOutcomePanel } from './components/SessionOutcomePanel';
 import { completeStudySession, interruptStudySession } from './session-service';
 import { Button } from '../../shared/ui/Button/Button';
 import styles from './SessionPage.module.css';
@@ -14,6 +15,7 @@ export function SessionPage() {
   const activeSession = useActiveSession();
   const sessionPhase = useSessionPhase();
   const selectedTopic = useSelectedTopic();
+  const completedSession = useCompletedSession();
   const reset = useSessionStore((state) => state.reset);
   const [actionError, setActionError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -64,6 +66,16 @@ export function SessionPage() {
     navigate('/', { replace: true });
   }, [reset, navigate]);
 
+  const handleNextSession = useCallback(() => {
+    reset();
+    navigate('/', { replace: true });
+  }, [reset, navigate]);
+
+  const handleViewStats = useCallback(() => {
+    reset();
+    navigate('/stats', { replace: true });
+  }, [reset, navigate]);
+
   const clock = useSessionClock({
     startedAtMs: activeSession?.startedAtMs ?? Date.now(),
     plannedDurationSec: activeSession?.plannedDurationSec ?? 0,
@@ -76,18 +88,36 @@ export function SessionPage() {
     return null;
   }
 
-  // 세션 완료/중단 상태
-  if (sessionPhase === 'completed' || sessionPhase === 'interrupted') {
-    const message =
-      sessionPhase === 'completed'
-        ? '세션이 완료되었습니다.'
-        : '세션이 중단되었습니다';
+  // 세션 완료 상태 — SessionOutcomePanel 표시
+  if (sessionPhase === 'completed') {
+    const actualDurationSec = (() => {
+      if (completedSession?.endedAtMs && completedSession.startedAtMs) {
+        return Math.floor((completedSession.endedAtMs - completedSession.startedAtMs) / 1000);
+      }
+      return activeSession?.plannedDurationSec ?? 0;
+    })();
 
     return (
       <div className={styles.page}>
+        <SessionOutcomePanel
+          variant="success"
+          topicName={selectedTopic.name ?? ''}
+          durationSec={actualDurationSec}
+          onNextSession={handleNextSession}
+          onViewStats={handleViewStats}
+          onGoHome={handleGoHome}
+        />
+      </div>
+    );
+  }
+
+  // 세션 중단 상태 — Story 3.5에서 recovery variant로 교체 예정
+  if (sessionPhase === 'interrupted') {
+    return (
+      <div className={styles.page}>
         <div className={styles.endState}>
-          <CharacterStatePanel state="default" message={message} />
-          <p className={styles.endMessage}>{message}</p>
+          <CharacterStatePanel state="default" message="세션이 중단되었습니다" />
+          <p className={styles.endMessage}>세션이 중단되었습니다</p>
           <button
             className={styles.homeButton}
             onClick={handleGoHome}

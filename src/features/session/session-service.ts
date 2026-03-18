@@ -7,6 +7,7 @@ import type { CreateSessionInput } from '../../domain/sessions/session';
 import type { Result } from '../../shared/lib/result';
 import type { Session } from '../../domain/sessions/session';
 import { useSessionStore } from './state/sessionStore';
+import { sendSessionNotification } from '../../platform/tauri/notification-client';
 
 /** 기본 포모도로 학습 시간 (25분 = 1500초) */
 export const DEFAULT_STUDY_DURATION_SEC = 25 * 60;
@@ -44,7 +45,12 @@ export async function completeStudySession(sessionId: string): Promise<Result<Se
   const result = await completeSessionRecord({ sessionId });
 
   if (result.ok) {
-    useSessionStore.getState().endSession();
+    useSessionStore.getState().endSession(result.data);
+
+    // 알림은 보조 기능 — fire-and-forget
+    const topicName = useSessionStore.getState().selectedTopicName ?? '';
+    const durationMin = Math.round(result.data.plannedDurationSec / 60);
+    sendSessionNotification('세션 완료', `${topicName} — ${durationMin}분 학습 완료`);
   }
 
   return result;

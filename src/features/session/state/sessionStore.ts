@@ -9,9 +9,10 @@ interface SessionState {
   sessionPhase: SessionPhase;
   selectedTopicId: string | null;
   selectedTopicName: string | null;
+  completedSession: Session | null;
 
   startSession: (session: Session) => void;
-  endSession: () => void;
+  endSession: (session: Session) => void;
   interruptCurrentSession: () => void;
   setSelectedTopic: (id: string | null, name: string | null) => void;
   reset: () => void;
@@ -22,6 +23,7 @@ const initialState = {
   sessionPhase: 'idle' as SessionPhase,
   selectedTopicId: null,
   selectedTopicName: null,
+  completedSession: null,
 };
 
 export const useSessionStore = create<SessionState>((set) => ({
@@ -30,8 +32,8 @@ export const useSessionStore = create<SessionState>((set) => ({
   startSession: (session: Session) =>
     set({ activeSession: session, sessionPhase: 'running' }),
 
-  endSession: () =>
-    set({ sessionPhase: 'completed' }),
+  endSession: (session: Session) =>
+    set({ sessionPhase: 'completed', completedSession: session }),
 
   interruptCurrentSession: () =>
     set({ sessionPhase: 'interrupted' }),
