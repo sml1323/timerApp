@@ -1,5 +1,5 @@
 # generated: 2026-03-17T17:51:51+09:00
-# last_updated: 2026-03-18T11:03:45+09:00
+# last_updated: 2026-03-18T11:10:46+09:00
 # project: bmad_test
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-03-17T17:51:51+09:00
-last_updated: 2026-03-18T11:03:45+09:00
+last_updated: 2026-03-18T12:00:20+09:00
 project: bmad_test
 project_key: NOKEY
 tracking_system: file-system
@@ -52,7 +52,7 @@ development_status:
 
   # Epic 2: 주제 생성 및 관리
   epic-2: in-progress
-  2-1-주제-도메인-모델-및-저장소-구현: ready-for-dev
+  2-1-주제-도메인-모델-및-저장소-구현: done
   2-2-주제-생성-및-목록-화면-구현: backlog
   2-3-주제-수정-및-정리-기능: backlog
   2-4-빠른-주제-선택-패널-구현: backlog
