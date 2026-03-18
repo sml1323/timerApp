@@ -1,0 +1,7 @@
+/* CSS 변수 (디자인 토큰) - Story 1.2에서 완성 예정 */
+:root {
+  --color-primary: #4a90e2;
+  --color-bg: #ffffff;
+  --color-text: #222222;
+  --spacing-base: 8px;
+}
