@@ -13,3 +13,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     updated_at_ms INTEGER NOT NULL,
     FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE RESTRICT
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_sessions_single_running
+    ON sessions(status)
+    WHERE status = 'running';

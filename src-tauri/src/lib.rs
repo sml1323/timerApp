@@ -15,6 +15,12 @@ pub fn run() {
             sql: include_str!("../../src/db/migrations/002_indexes.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "enforce_single_running_session",
+            sql: include_str!("../../src/db/migrations/003_single_running_session_guard.sql"),
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
