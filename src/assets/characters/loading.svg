@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- 집중 진행 중 캐릭터 — 간단한 펄스 애니메이션 -->
+  <style>
+    .pulse { animation: pulse 2s ease-in-out infinite; transform-origin: center; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.85; } }
+    .blink { animation: blink 3s ease-in-out infinite; }
+    @keyframes blink { 0%, 44%, 48%, 100% { ry: 5; } 45%, 47% { ry: 1; } }
+  </style>
+  <!-- 몸체 -->
+  <circle class="pulse" cx="60" cy="60" r="40" fill="hsl(210, 25%, 45%)" opacity="0.15"/>
+  <circle cx="60" cy="60" r="32" fill="hsl(210, 25%, 45%)" opacity="0.9"/>
+  <!-- 눈 -->
+  <ellipse class="blink" cx="48" cy="54" rx="4" ry="5" fill="hsl(0, 0%, 100%)"/>
+  <ellipse class="blink" cx="72" cy="54" rx="4" ry="5" fill="hsl(0, 0%, 100%)"/>
+  <circle cx="49" cy="53" r="2" fill="hsl(210, 30%, 20%)"/>
+  <circle cx="73" cy="53" r="2" fill="hsl(210, 30%, 20%)"/>
+  <!-- 입 (집중) -->
+  <line x1="52" y1="70" x2="68" y2="70" stroke="hsl(0, 0%, 100%)" stroke-width="2" stroke-linecap="round"/>
+  <!-- 이마 땀 -->
+  <ellipse cx="78" cy="42" rx="2.5" ry="3.5" fill="hsl(200, 60%, 70%)" opacity="0.7"/>
+</svg>

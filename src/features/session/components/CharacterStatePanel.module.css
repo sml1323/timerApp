@@ -1,0 +1,29 @@
+/* CharacterStatePanel — 캐릭터 상태 표시 */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+}
+
+.characterImage {
+  width: 80px;
+  height: 80px;
+}
+
+.message {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+/* 반응형: Compact */
+@media (max-width: 799px) {
+  .characterImage {
+    width: 60px;
+    height: 60px;
+  }
+}

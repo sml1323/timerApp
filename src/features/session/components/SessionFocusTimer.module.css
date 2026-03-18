@@ -1,0 +1,108 @@
+/* SessionFocusTimer — 포모도로 타이머 핵심 UI */
+
+.timerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-6);
+}
+
+/* 원형 진행률 래퍼 */
+.progressRing {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progressSvg {
+  transform: rotate(-90deg);
+}
+
+.progressTrack {
+  fill: none;
+  stroke: var(--color-neutral-200);
+  stroke-width: 6;
+}
+
+.progressFill {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+}
+
+/* 타이머 숫자 — 오버레이 */
+.timeDisplay {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.time {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+  letter-spacing: 0.02em;
+}
+
+.topicName {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  max-width: 180px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 상태 텍스트 */
+.statusText {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* 중단 버튼 */
+.interruptButton {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-2) var(--spacing-6);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-destructive);
+  background: transparent;
+  border: 1px solid var(--color-destructive);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.interruptButton:hover {
+  background: var(--color-destructive-light);
+}
+
+.interruptButton:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.interruptButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* 반응형: Compact */
+@media (max-width: 799px) {
+  .time {
+    font-size: var(--font-size-3xl);
+  }
+
+  .topicName {
+    max-width: 140px;
+  }
+}
