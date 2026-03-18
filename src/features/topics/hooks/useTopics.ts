@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Topic } from '../../../domain/topics/topic';
-import { loadTopics, addTopic } from '../topic-service';
+import { loadTopics, addTopic, editTopic, removeTopic } from '../topic-service';
 
 export function useTopics() {
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -32,5 +32,22 @@ export function useTopics() {
     return result;
   }, [fetchTopics]);
 
-  return { topics, isLoading, error, createNewTopic, refetch: fetchTopics };
+  const updateExistingTopic = useCallback(async (id: string, name: string) => {
+    const result = await editTopic(id, { name });
+    if (result.ok) {
+      await fetchTopics();
+    }
+    return result;
+  }, [fetchTopics]);
+
+  const archiveExistingTopic = useCallback(async (id: string) => {
+    const result = await removeTopic(id);
+    if (result.ok) {
+      // 아카이브 후 목록 갱신 → 해당 주제 자동 제거
+      await fetchTopics();
+    }
+    return result;
+  }, [fetchTopics]);
+
+  return { topics, isLoading, error, createNewTopic, updateExistingTopic, archiveExistingTopic, refetch: fetchTopics };
 }

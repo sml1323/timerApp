@@ -5,9 +5,19 @@ import defaultCharacter from '../../assets/characters/default.svg';
 import styles from './TopicsPage.module.css';
 
 export function TopicsPage() {
-  const { topics, isLoading, error, createNewTopic } = useTopics();
+  const { topics, isLoading, error, createNewTopic, updateExistingTopic, archiveExistingTopic } = useTopics();
 
   const isEmpty = !isLoading && topics.length === 0;
+
+  const handleEdit = async (id: string, name: string) => {
+    const result = await updateExistingTopic(id, name);
+    return { ok: result.ok, message: result.ok ? undefined : result.message };
+  };
+
+  const handleArchive = async (id: string) => {
+    const result = await archiveExistingTopic(id);
+    return { ok: result.ok, message: result.ok ? undefined : result.message };
+  };
 
   return (
     <section className={styles.page}>
@@ -46,7 +56,7 @@ export function TopicsPage() {
 
       {!isLoading && topics.length > 0 && (
         <div className={styles.listSection}>
-          <TopicList topics={topics} />
+          <TopicList topics={topics} onEdit={handleEdit} onArchive={handleArchive} />
         </div>
       )}
     </section>
