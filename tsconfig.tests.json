@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": ["ES2020"],
+    "lib": ["ES2020", "DOM"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "skipLibCheck": true,
@@ -12,8 +12,13 @@
     "rootDir": "."
   },
   "include": [
+    "src/platform/tauri/sql-client.ts",
     "src/domain/sessions/session.ts",
     "src/features/session/session-flow.ts",
-    "src/features/session/state/sessionStore.ts"
+    "src/features/session/state/sessionStore.ts",
+    "src/domain/goals/weekly-goal.ts",
+    "src/domain/goals/weekly-goal-mappers.ts",
+    "src/domain/goals/weekly-goal-schema.ts",
+    "src/domain/goals/weekly-goal-repository.ts"
   ]
 }
