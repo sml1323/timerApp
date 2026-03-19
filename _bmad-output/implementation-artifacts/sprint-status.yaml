@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-03-17T17:51:51+09:00
-last_updated: 2026-03-19T13:29:30+09:00
+last_updated: 2026-03-19T13:52:04+09:00
 project: bmad_test
 project_key: NOKEY
 tracking_system: file-system
@@ -63,7 +63,7 @@ development_status:
   3-1-세션-도메인-모델-및-저장소-구현: done
   3-2-포모도로-타이머-및-집중-모드-ui-구현: done
   3-3-세션-완료-및-자동-기록-저장: done
-  3-4-휴식-세션-및-학습-휴식-전환: in-progress
+  3-4-휴식-세션-및-학습-휴식-전환: done
   3-5-브라우저-검증용-런타임-분리-및-테스트-하니스: done
   3-6-세션-중단-및-회복-플로우: backlog
   epic-3-retrospective: optional

@@ -82,14 +82,6 @@ export async function completeActiveSession(sessionId: string): Promise<Result<S
 }
 
 /**
- * 진행 중인 학습 세션을 완료 처리한다.
- * 이전 API 호환을 위해 유지한다.
- */
-export async function completeStudySession(sessionId: string): Promise<Result<Session>> {
-  return completeActiveSession(sessionId);
-}
-
-/**
  * 진행 중인 세션을 중단 처리한다.
  * DB 반영이 성공한 경우에만 sessionStore를 interrupted로 전환한다.
  */
@@ -101,12 +93,4 @@ export async function interruptActiveSession(sessionId: string): Promise<Result<
   }
 
   return result;
-}
-
-/**
- * 진행 중인 학습 세션을 중단 처리한다.
- * 이전 API 호환을 위해 유지한다.
- */
-export async function interruptStudySession(sessionId: string): Promise<Result<Session>> {
-  return interruptActiveSession(sessionId);
 }

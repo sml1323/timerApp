@@ -15,11 +15,6 @@ interface SessionOutcomePanelProps {
   isBusy?: boolean;
 }
 
-const FEEDBACK_MESSAGES: Record<'success' | 'recovery', string> = {
-  success: '수고했어요! 한 걸음 전진했습니다.',
-  recovery: '', // Story 3.5에서 구현
-};
-
 function formatDuration(totalSec: number): string {
   const minutes = Math.floor(totalSec / 60);
   const seconds = totalSec % 60;
@@ -27,7 +22,7 @@ function formatDuration(totalSec: number): string {
 }
 
 export function SessionOutcomePanel({
-  variant,
+  variant: _variant,
   topicName,
   durationSec,
   durationLabel,
@@ -38,12 +33,11 @@ export function SessionOutcomePanel({
   onGoHome,
   isBusy = false,
 }: SessionOutcomePanelProps) {
-  const resolvedFeedbackMessage = feedbackMessage || FEEDBACK_MESSAGES[variant] || FEEDBACK_MESSAGES.success;
   const durationText = formatDuration(durationSec);
 
   return (
     <div className={styles.panel} role="status" aria-live="polite">
-      <CharacterStatePanel state="speak" message={resolvedFeedbackMessage} />
+      <CharacterStatePanel state="speak" message={feedbackMessage} />
 
       <div className={styles.summary}>
         <p className={styles.topicName}>{topicName}</p>
