@@ -19,6 +19,13 @@
     "src/domain/goals/weekly-goal.ts",
     "src/domain/goals/weekly-goal-mappers.ts",
     "src/domain/goals/weekly-goal-schema.ts",
-    "src/domain/goals/weekly-goal-repository.ts"
+    "src/domain/goals/weekly-goal-repository.ts",
+    "src/shared/lib/dates.ts",
+    "src/shared/lib/result.ts",
+    "src/shared/lib/errors.ts",
+    "src/platform/runtime/runtime-detect.ts",
+    "src/platform/browser/goal-adapter.ts",
+    "src/platform/browser/in-memory-goal-adapter.ts",
+    "src/features/goals/goal-service.ts"
   ]
 }

@@ -1,9 +1,9 @@
-import { select, execute } from '../../platform/tauri/sql-client';
-import { ok, err, type Result } from '../../shared/lib/result';
-import { ERROR_CODES } from '../../shared/lib/errors';
-import type { WeeklyGoal, CreateWeeklyGoalInput, UpdateWeeklyGoalInput } from './weekly-goal';
-import { type WeeklyGoalRow, toWeeklyGoal } from './weekly-goal-mappers';
-import { CreateWeeklyGoalSchema, UpdateWeeklyGoalSchema } from './weekly-goal-schema';
+import { select, execute } from '../../platform/tauri/sql-client.js';
+import { ok, err, type Result } from '../../shared/lib/result.js';
+import { ERROR_CODES } from '../../shared/lib/errors.js';
+import type { WeeklyGoal, CreateWeeklyGoalInput, UpdateWeeklyGoalInput } from './weekly-goal.js';
+import { type WeeklyGoalRow, toWeeklyGoal } from './weekly-goal-mappers.js';
+import { CreateWeeklyGoalSchema, UpdateWeeklyGoalSchema } from './weekly-goal-schema.js';
 
 /**
  * 새 주간 목표를 생성한다.
