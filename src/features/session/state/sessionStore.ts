@@ -30,10 +30,10 @@ export const useSessionStore = create<SessionState>((set) => ({
   ...initialState,
 
   startSession: (session: Session) =>
-    set({ activeSession: session, sessionPhase: 'running' }),
+    set({ activeSession: session, sessionPhase: 'running', completedSession: null }),
 
   endSession: (session: Session) =>
-    set({ sessionPhase: 'completed', completedSession: session }),
+    set({ activeSession: session, sessionPhase: 'completed', completedSession: session }),
 
   interruptCurrentSession: () =>
     set({ sessionPhase: 'interrupted' }),

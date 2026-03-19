@@ -1,0 +1,50 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {
+  getOutcomeContent,
+  getPhaseStartErrorMessage,
+  getSessionStatusText,
+} from '../.test-dist/src/features/session/session-flow.js';
+
+test('study completion copy starts a break session next', () => {
+  const content = getOutcomeContent('study');
+
+  assert.deepEqual(content, {
+    durationLabel: '학습 완료',
+    feedbackMessage: '수고했어요! 한 걸음 전진했습니다.',
+    primaryActionLabel: '휴식 시작',
+    nextPhaseType: 'break',
+  });
+});
+
+test('break completion copy returns to the next study session', () => {
+  const content = getOutcomeContent('break');
+
+  assert.deepEqual(content, {
+    durationLabel: '휴식 완료',
+    feedbackMessage: '좋아요. 다시 집중할 준비가 되었어요.',
+    primaryActionLabel: '다음 학습 시작',
+    nextPhaseType: 'study',
+  });
+});
+
+test('running status text reflects break sessions distinctly', () => {
+  assert.equal(getSessionStatusText('study', 30), '집중 진행 중');
+  assert.equal(getSessionStatusText('break', 30), '휴식 진행 중');
+});
+
+test('status text switches to completion when time is up', () => {
+  assert.equal(getSessionStatusText('study', 0), '세션 완료');
+  assert.equal(getSessionStatusText('break', -1), '세션 완료');
+});
+
+test('start error copy is phase-aware', () => {
+  assert.equal(
+    getPhaseStartErrorMessage('break'),
+    '휴식 세션 시작 중 예상치 못한 오류가 발생했습니다.',
+  );
+  assert.equal(
+    getPhaseStartErrorMessage('study'),
+    '다음 학습 세션 시작 중 예상치 못한 오류가 발생했습니다.',
+  );
+});

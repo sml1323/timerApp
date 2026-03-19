@@ -1,12 +1,19 @@
 import { useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router';
+import type { SessionPhaseType } from '../../domain/sessions/session';
 import { useSessionStore } from './state/sessionStore';
 import { useSessionPhase, useActiveSession, useSelectedTopic, useCompletedSession } from './state/sessionSelectors';
 import { useSessionClock } from './hooks/useSessionClock';
 import { SessionFocusTimer } from './components/SessionFocusTimer';
 import { CharacterStatePanel } from './components/CharacterStatePanel';
 import { SessionOutcomePanel } from './components/SessionOutcomePanel';
-import { completeStudySession, interruptStudySession } from './session-service';
+import { getOutcomeContent, getPhaseStartErrorMessage, getSessionStatusText } from './session-flow';
+import {
+  beginBreakSession,
+  beginStudySession,
+  completeActiveSession,
+  interruptActiveSession,
+} from './session-service';
 import { Button } from '../../shared/ui/Button/Button';
 import styles from './SessionPage.module.css';
 
@@ -19,6 +26,8 @@ export function SessionPage() {
   const reset = useSessionStore((state) => state.reset);
   const [actionError, setActionError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const selectedTopicId = selectedTopic.id;
+  const selectedTopicName = selectedTopic.name;
 
   // 세션이 없는 상태로 직접 접근 시 홈으로 리다이렉트
   useEffect(() => {
@@ -33,7 +42,7 @@ export function SessionPage() {
     setIsSaving(true);
 
     try {
-      const result = await completeStudySession(activeSession.id);
+      const result = await completeActiveSession(activeSession.id);
       if (!result.ok) {
         setActionError(result.message);
       }
@@ -50,7 +59,7 @@ export function SessionPage() {
     setIsSaving(true);
 
     try {
-      const result = await interruptStudySession(activeSession.id);
+      const result = await interruptActiveSession(activeSession.id);
       if (!result.ok) {
         setActionError(result.message);
       }
@@ -61,15 +70,48 @@ export function SessionPage() {
     }
   }, [activeSession]);
 
+  const transitionToPhase = useCallback(async (nextPhaseType: SessionPhaseType) => {
+    const topicId = selectedTopicId ?? completedSession?.topicId ?? activeSession?.topicId;
+    if (!topicId) {
+      setActionError('다음 세션을 시작할 주제가 없습니다.');
+      return;
+    }
+
+    setActionError(null);
+    setIsSaving(true);
+
+    try {
+      const result = nextPhaseType === 'break'
+        ? await beginBreakSession(topicId, selectedTopicName ?? null)
+        : await beginStudySession(topicId, selectedTopicName ?? null);
+
+      if (!result.ok) {
+        setActionError(result.message);
+      }
+    } catch {
+      setActionError(getPhaseStartErrorMessage(nextPhaseType));
+    } finally {
+      setIsSaving(false);
+    }
+  }, [
+    activeSession?.topicId,
+    completedSession?.topicId,
+    selectedTopicId,
+    selectedTopicName,
+  ]);
+
   const handleGoHome = useCallback(() => {
     reset();
     navigate('/', { replace: true });
   }, [reset, navigate]);
 
-  const handleNextSession = useCallback(() => {
-    reset();
-    navigate('/', { replace: true });
-  }, [reset, navigate]);
+  const handleStartBreak = useCallback(() => {
+    void transitionToPhase('break');
+  }, [transitionToPhase]);
+
+  const handleStartNextStudy = useCallback(() => {
+    void transitionToPhase('study');
+  }, [transitionToPhase]);
 
   const handleViewStats = useCallback(() => {
     reset();
@@ -90,23 +132,37 @@ export function SessionPage() {
 
   // 세션 완료 상태 — SessionOutcomePanel 표시
   if (sessionPhase === 'completed') {
+    const completedPhaseType = completedSession?.phaseType ?? activeSession?.phaseType ?? 'study';
+    const outcomeContent = getOutcomeContent(completedPhaseType);
     const actualDurationSec = (() => {
       if (completedSession?.endedAtMs && completedSession.startedAtMs) {
         return Math.floor((completedSession.endedAtMs - completedSession.startedAtMs) / 1000);
       }
       return activeSession?.plannedDurationSec ?? 0;
     })();
+    const handlePrimaryAction = outcomeContent.nextPhaseType === 'break'
+      ? handleStartBreak
+      : handleStartNextStudy;
 
     return (
       <div className={styles.page}>
         <SessionOutcomePanel
           variant="success"
-          topicName={selectedTopic.name ?? ''}
+          topicName={selectedTopicName ?? ''}
           durationSec={actualDurationSec}
-          onNextSession={handleNextSession}
+          durationLabel={outcomeContent.durationLabel}
+          feedbackMessage={outcomeContent.feedbackMessage}
+          primaryActionLabel={outcomeContent.primaryActionLabel}
+          onPrimaryAction={handlePrimaryAction}
           onViewStats={handleViewStats}
           onGoHome={handleGoHome}
+          isBusy={isSaving}
         />
+        {actionError && (
+          <p className={styles.actionError} role="alert">
+            {actionError}
+          </p>
+        )}
       </div>
     );
   }
@@ -134,14 +190,18 @@ export function SessionPage() {
   return (
     <div className={styles.page}>
       <SessionFocusTimer
+        phaseType={activeSession?.phaseType ?? 'study'}
         formattedTime={clock.formattedTime}
         progressPercent={clock.progressPercent}
-        topicName={selectedTopic.name ?? ''}
+        topicName={selectedTopicName ?? ''}
         remainingSec={clock.remainingSec}
         onInterrupt={handleInterrupt}
         isBusy={isSaving}
       />
-      <CharacterStatePanel state="loading" />
+      <CharacterStatePanel
+        state="loading"
+        message={getSessionStatusText(activeSession?.phaseType ?? 'study', clock.remainingSec)}
+      />
       {actionError && (
         <p className={styles.actionError} role="alert">
           {actionError}

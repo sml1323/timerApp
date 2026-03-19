@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/react/shallow';
 import { useSessionStore } from './sessionStore';
 
 /** 현재 활성 세션 반환 */
@@ -17,10 +18,12 @@ export function useIsSessionRunning() {
 
 /** 선택된 주제 정보 반환 */
 export function useSelectedTopic() {
-  return useSessionStore((state) => ({
-    id: state.selectedTopicId,
-    name: state.selectedTopicName,
-  }));
+  return useSessionStore(
+    useShallow((state) => ({
+      id: state.selectedTopicId,
+      name: state.selectedTopicName,
+    })),
+  );
 }
 
 /** 완료된 세션 정보 반환 */

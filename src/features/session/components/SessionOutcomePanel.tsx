@@ -6,9 +6,13 @@ interface SessionOutcomePanelProps {
   variant: 'success' | 'recovery';
   topicName: string;
   durationSec: number;
-  onNextSession: () => void;
+  durationLabel: string;
+  feedbackMessage: string;
+  primaryActionLabel: string;
+  onPrimaryAction: () => void;
   onViewStats: () => void;
   onGoHome: () => void;
+  isBusy?: boolean;
 }
 
 const FEEDBACK_MESSAGES: Record<'success' | 'recovery', string> = {
@@ -26,30 +30,34 @@ export function SessionOutcomePanel({
   variant,
   topicName,
   durationSec,
-  onNextSession,
+  durationLabel,
+  feedbackMessage,
+  primaryActionLabel,
+  onPrimaryAction,
   onViewStats,
   onGoHome,
+  isBusy = false,
 }: SessionOutcomePanelProps) {
-  const feedbackMessage = FEEDBACK_MESSAGES[variant] || FEEDBACK_MESSAGES.success;
+  const resolvedFeedbackMessage = feedbackMessage || FEEDBACK_MESSAGES[variant] || FEEDBACK_MESSAGES.success;
   const durationText = formatDuration(durationSec);
 
   return (
     <div className={styles.panel} role="status" aria-live="polite">
-      <CharacterStatePanel state="speak" message={feedbackMessage} />
+      <CharacterStatePanel state="speak" message={resolvedFeedbackMessage} />
 
       <div className={styles.summary}>
         <p className={styles.topicName}>{topicName}</p>
-        <p className={styles.duration}>{durationText} 학습 완료</p>
+        <p className={styles.duration}>{durationText} {durationLabel}</p>
       </div>
 
       <div className={styles.actions}>
-        <Button variant="primary" onClick={onNextSession}>
-          다음 세션 시작
+        <Button variant="primary" onClick={onPrimaryAction} isLoading={isBusy}>
+          {primaryActionLabel}
         </Button>
-        <Button variant="secondary" onClick={onViewStats}>
+        <Button variant="secondary" onClick={onViewStats} disabled={isBusy}>
           통계 보기
         </Button>
-        <Button variant="text" onClick={onGoHome}>
+        <Button variant="text" onClick={onGoHome} disabled={isBusy}>
           홈으로
         </Button>
       </div>

@@ -1,6 +1,9 @@
+import type { SessionPhaseType } from '../../../domain/sessions/session';
+import { getSessionStatusText } from '../session-flow';
 import styles from './SessionFocusTimer.module.css';
 
 interface SessionFocusTimerProps {
+  phaseType: SessionPhaseType;
   formattedTime: string;
   progressPercent: number;
   topicName: string;
@@ -13,6 +16,7 @@ const RADIUS = 90;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export function SessionFocusTimer({
+  phaseType,
   formattedTime,
   progressPercent,
   topicName,
@@ -21,9 +25,7 @@ export function SessionFocusTimer({
   isBusy = false,
 }: SessionFocusTimerProps) {
   const dashOffset = CIRCUMFERENCE - (progressPercent / 100) * CIRCUMFERENCE;
-
-  const statusText =
-    remainingSec > 0 ? '집중 진행 중' : '세션 완료';
+  const statusText = getSessionStatusText(phaseType, remainingSec);
 
   return (
     <div className={styles.timerContainer}>
