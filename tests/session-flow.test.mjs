@@ -4,6 +4,8 @@ import {
   getOutcomeContent,
   getPhaseStartErrorMessage,
   getSessionStatusText,
+  getInterruptedOutcomeContent,
+  getWeeklyRecoveryHint,
 } from '../.test-dist/src/features/session/session-flow.js';
 
 test('study completion copy starts a break session next', () => {
@@ -47,4 +49,29 @@ test('start error copy is phase-aware', () => {
     getPhaseStartErrorMessage('study'),
     '다음 학습 세션 시작 중 예상치 못한 오류가 발생했습니다.',
   );
+});
+
+test('interrupted outcome content provides recovery-positive messaging', () => {
+  const content = getInterruptedOutcomeContent();
+
+  assert.equal(content.feedbackMessage, '괜찮아요, 이번 주 안에 다시 이어갈 수 있어요.');
+  assert.equal(content.primaryActionLabel, '바로 재시작');
+  assert.equal(content.secondaryActionLabel, '다른 주제 선택');
+  assert.equal(content.tertiaryActionLabel, '오늘은 종료');
+  assert.ok(content.recoveryHint.length > 0, 'recoveryHint should not be empty');
+});
+
+test('recovery messages avoid failure-inducing words', () => {
+  const content = getInterruptedOutcomeContent();
+  const failureWords = ['실패', '미달성', '부족'];
+  const allText = `${content.feedbackMessage} ${content.recoveryHint}`;
+
+  for (const word of failureWords) {
+    assert.ok(!allText.includes(word), `Recovery content should not include "${word}"`);
+  }
+});
+
+test('weekly recovery hint returns static placeholder text', () => {
+  const hint = getWeeklyRecoveryHint();
+  assert.equal(hint, '중단해도 괜찮아요. 언제든 다시 시작할 수 있습니다.');
 });

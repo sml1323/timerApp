@@ -7,7 +7,7 @@ import { useSessionClock } from './hooks/useSessionClock';
 import { SessionFocusTimer } from './components/SessionFocusTimer';
 import { CharacterStatePanel } from './components/CharacterStatePanel';
 import { SessionOutcomePanel } from './components/SessionOutcomePanel';
-import { getOutcomeContent, getPhaseStartErrorMessage, getSessionStatusText } from './session-flow';
+import { getOutcomeContent, getInterruptedOutcomeContent, getPhaseStartErrorMessage, getSessionStatusText } from './session-flow';
 import {
   beginBreakSession,
   beginStudySession,
@@ -167,21 +167,38 @@ export function SessionPage() {
     );
   }
 
-  // 세션 중단 상태 — Story 3.5에서 recovery variant로 교체 예정
+  // 세션 중단 상태 — recovery variant SessionOutcomePanel
   if (sessionPhase === 'interrupted') {
+    const interruptedContent = getInterruptedOutcomeContent();
+    const interruptedDurationSec = (() => {
+      const session = completedSession ?? activeSession;
+      if (session?.endedAtMs && session.startedAtMs) {
+        return Math.floor((session.endedAtMs - session.startedAtMs) / 1000);
+      }
+      return activeSession?.plannedDurationSec ?? 0;
+    })();
+
     return (
       <div className={styles.page}>
-        <div className={styles.endState}>
-          <CharacterStatePanel state="default" message="세션이 중단되었습니다" />
-          <p className={styles.endMessage}>세션이 중단되었습니다</p>
-          <button
-            className={styles.homeButton}
-            onClick={handleGoHome}
-            type="button"
-          >
-            홈으로 돌아가기
-          </button>
-        </div>
+        <SessionOutcomePanel
+          variant="recovery"
+          topicName={selectedTopicName ?? ''}
+          durationSec={interruptedDurationSec}
+          durationLabel="진행 중단"
+          feedbackMessage={interruptedContent.feedbackMessage}
+          primaryActionLabel={interruptedContent.primaryActionLabel}
+          onPrimaryAction={handleStartNextStudy}
+          onViewStats={handleViewStats}
+          onGoHome={handleGoHome}
+          isBusy={isSaving}
+          recoveryHint={interruptedContent.recoveryHint}
+          onSelectOtherTopic={handleGoHome}
+        />
+        {actionError && (
+          <p className={styles.actionError} role="alert">
+            {actionError}
+          </p>
+        )}
       </div>
     );
   }

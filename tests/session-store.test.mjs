@@ -75,3 +75,26 @@ test('reset clears topic and session state together', () => {
   assert.equal(state.selectedTopicName, null);
   assert.equal(state.completedSession, null);
 });
+
+test('interruptCurrentSession preserves session data in completedSession for recovery UI', () => {
+  const store = useSessionStore.getState();
+  store.setSelectedTopic('topic-1', '자료구조');
+  store.startSession(runningStudySession);
+
+  const interruptedSession = {
+    ...runningStudySession,
+    status: 'interrupted',
+    endedAtMs: 1800,
+    updatedAtMs: 1800,
+  };
+  store.interruptCurrentSession(interruptedSession);
+
+  const state = useSessionStore.getState();
+  assert.equal(state.sessionPhase, 'interrupted');
+  assert.deepEqual(state.completedSession, interruptedSession);
+  // activeSession should still be available for topic context (recovery restart)
+  assert.deepEqual(state.activeSession, runningStudySession);
+  // topic context preserved for "바로 재시작"
+  assert.equal(state.selectedTopicId, 'topic-1');
+  assert.equal(state.selectedTopicName, '자료구조');
+});

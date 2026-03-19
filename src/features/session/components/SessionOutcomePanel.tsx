@@ -13,6 +13,10 @@ interface SessionOutcomePanelProps {
   onViewStats: () => void;
   onGoHome: () => void;
   isBusy?: boolean;
+  /** recovery variant 전용: 이번 주 남은 목표 힌트 */
+  recoveryHint?: string;
+  /** recovery variant 전용: 다른 주제 선택 핸들러 */
+  onSelectOtherTopic?: () => void;
 }
 
 function formatDuration(totalSec: number): string {
@@ -22,7 +26,7 @@ function formatDuration(totalSec: number): string {
 }
 
 export function SessionOutcomePanel({
-  variant: _variant,
+  variant,
   topicName,
   durationSec,
   durationLabel,
@@ -32,11 +36,14 @@ export function SessionOutcomePanel({
   onViewStats,
   onGoHome,
   isBusy = false,
+  recoveryHint,
+  onSelectOtherTopic,
 }: SessionOutcomePanelProps) {
   const durationText = formatDuration(durationSec);
+  const isRecovery = variant === 'recovery';
 
   return (
-    <div className={styles.panel} role="status" aria-live="polite">
+    <div className={`${styles.panel} ${isRecovery ? styles.recoveryPanel : ''}`} role="status" aria-live="polite">
       <CharacterStatePanel state="speak" message={feedbackMessage} />
 
       <div className={styles.summary}>
@@ -44,16 +51,33 @@ export function SessionOutcomePanel({
         <p className={styles.duration}>{durationText} {durationLabel}</p>
       </div>
 
+      {isRecovery && recoveryHint && (
+        <p className={styles.recoveryHint}>{recoveryHint}</p>
+      )}
+
       <div className={styles.actions}>
         <Button variant="primary" onClick={onPrimaryAction} isLoading={isBusy}>
           {primaryActionLabel}
         </Button>
-        <Button variant="secondary" onClick={onViewStats} disabled={isBusy}>
-          통계 보기
-        </Button>
-        <Button variant="text" onClick={onGoHome} disabled={isBusy}>
-          홈으로
-        </Button>
+        {isRecovery ? (
+          <>
+            <Button variant="secondary" onClick={onSelectOtherTopic ?? onGoHome} disabled={isBusy}>
+              다른 주제 선택
+            </Button>
+            <Button variant="text" onClick={onGoHome} disabled={isBusy}>
+              오늘은 종료
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button variant="secondary" onClick={onViewStats} disabled={isBusy}>
+              통계 보기
+            </Button>
+            <Button variant="text" onClick={onGoHome} disabled={isBusy}>
+              홈으로
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );

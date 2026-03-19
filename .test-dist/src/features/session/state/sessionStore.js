@@ -10,7 +10,7 @@ export const useSessionStore = create((set) => ({
     ...initialState,
     startSession: (session) => set({ activeSession: session, sessionPhase: 'running', completedSession: null }),
     endSession: (session) => set({ activeSession: session, sessionPhase: 'completed', completedSession: session }),
-    interruptCurrentSession: () => set({ sessionPhase: 'interrupted' }),
+    interruptCurrentSession: (session) => set({ sessionPhase: 'interrupted', completedSession: session }),
     setSelectedTopic: (id, name) => set({ selectedTopicId: id, selectedTopicName: name }),
     reset: () => set(initialState),
 }));

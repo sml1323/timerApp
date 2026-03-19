@@ -13,7 +13,7 @@ interface SessionState {
 
   startSession: (session: Session) => void;
   endSession: (session: Session) => void;
-  interruptCurrentSession: () => void;
+  interruptCurrentSession: (session: Session) => void;
   setSelectedTopic: (id: string | null, name: string | null) => void;
   reset: () => void;
 }
@@ -35,8 +35,8 @@ export const useSessionStore = create<SessionState>((set) => ({
   endSession: (session: Session) =>
     set({ activeSession: session, sessionPhase: 'completed', completedSession: session }),
 
-  interruptCurrentSession: () =>
-    set({ sessionPhase: 'interrupted' }),
+  interruptCurrentSession: (session: Session) =>
+    set({ sessionPhase: 'interrupted', completedSession: session }),
 
   setSelectedTopic: (id: string | null, name: string | null) =>
     set({ selectedTopicId: id, selectedTopicName: name }),

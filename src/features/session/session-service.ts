@@ -89,7 +89,7 @@ export async function interruptActiveSession(sessionId: string): Promise<Result<
   const result = await interruptSessionRecord({ sessionId });
 
   if (result.ok) {
-    useSessionStore.getState().interruptCurrentSession();
+    useSessionStore.getState().interruptCurrentSession(result.data);
   }
 
   return result;

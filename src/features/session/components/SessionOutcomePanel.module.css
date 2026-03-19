@@ -50,3 +50,17 @@
     transform: translateY(0);
   }
 }
+
+/* Recovery variant 스타일 분기 */
+.recoveryPanel {
+  /* recovery 패널 — 필요 시 배경/보더 분기 추가 */
+  opacity: 1;
+}
+
+.recoveryHint {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: 1.5;
+}
