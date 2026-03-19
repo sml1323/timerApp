@@ -102,13 +102,13 @@ Prompt selections:
 Tauri 공식 흐름과 Vite 기반 프론트엔드 개발 서버를 사용한다. 개발 시 `tauri dev`, 배포 시 Tauri 번들링 파이프라인을 따른다.
 
 **Testing Framework:**
-스타터 자체가 강한 테스트 체계를 고정하지 않으므로, 이후 아키텍처 결정 단계에서 UI 테스트와 도메인 테스트 전략을 별도로 정하는 것이 적절하다.
+스타터 자체가 강한 테스트 체계를 고정하지 않으므로, UI 테스트와 도메인 테스트 전략은 별도로 정의한다. 제품 runtime은 Tauri를 기준으로 유지하되, 핵심 Home / Session 흐름의 빠른 회귀 확인을 위해 브라우저 기반 internal QA harness 또는 mock runtime을 둘 수 있다. 이 경로는 사용자 제공 플랫폼이 아니라 검증 도구이며, Tauri runtime과 동일한 service / state 흐름을 최대한 재사용해야 한다.
 
 **Code Organization:**
 웹 UI 계층과 Tauri/Rust 계층이 분리된 구조를 기본으로 삼는다. 이는 화면 상태 관리, 로컬 저장 추상화, 타이머 도메인 로직, 통계 계산 로직을 명확히 분리하기 좋다.
 
 **Development Experience:**
-컴포넌트 개발은 React/Vite 흐름으로 빠르게 반복 가능하고, 데스크톱 동작은 Tauri 개발 서버로 검증할 수 있다. 이후 필요 시 공식 Tauri 플러그인으로 `store`, `notification`을 도입하기 쉽다.
+컴포넌트 개발은 React/Vite 흐름으로 빠르게 반복 가능하고, 데스크톱 동작은 Tauri 개발 서버로 검증할 수 있다. 또한 Tauri native API가 없는 환경에서도 핵심 Home / Session 플로우를 확인할 수 있도록 browser QA harness를 둘 수 있다. native persistence / notification 검증은 Tauri runtime에서 계속 수행하고, browser harness는 UI 흐름과 상태 전이 회귀 확인에 한정한다.
 
 **Note:** Project initialization using this command should be the first implementation story.
 
@@ -223,10 +223,12 @@ Tauri 공식 흐름과 Vite 기반 프론트엔드 개발 서버를 사용한다
 
 **Boundary Design:**
 - Create thin typed adapter modules in the frontend for:
-  - database access
+  - runtime detection / bootstrap
+  - database or in-memory persistence access
   - notification access
   - future native integrations
 - UI components must not call plugin APIs directly
+- Tauri-specific adapters and browser QA adapters must be selected behind a narrow runtime seam
 
 **Error Handling Standard:**
 - Use domain error categories, not raw driver/plugin messages in UI
@@ -897,6 +899,7 @@ bmad_test/
 
 **Important Gaps:**
 - 테스트 러너 선택이 아직 고정되지 않았다.
+- browser QA harness / mock runtime 전략이 아직 구현되지 않았다.
 - lint/format 조합에서 formatter 선택이 아직 명시되지 않았다.
 - Tauri capability 파일의 실제 scope 항목은 첫 구현 story에서 구체화해야 한다.
 

@@ -441,7 +441,24 @@ So that 학습과 휴식 리듬을 유지할 수 있다.
 **And** 휴식 세션 완료 시 다음 학습 세션 시작 CTA가 제공된다
 **And** 휴식 시간은 학습 통계에 포함되지 않는다
 
-### Story 3.5: 세션 중단 및 회복 플로우
+### Story 3.5: 브라우저 검증용 런타임 분리 및 테스트 하니스
+
+As a 개발자,
+I want Tauri 전용 초기화와 분리된 브라우저 검증 경로를 갖추기를,
+So that Home과 Session 핵심 흐름을 브라우저에서 빠르게 재현하고 회귀를 확인할 수 있다.
+
+**Acceptance Criteria:**
+
+**Given** 브라우저 런타임에서 앱을 열었을 때
+**When** Tauri native API가 존재하지 않으면
+**Then** 앱이 bootstrap 단계에서 실패하지 않고 internal QA 검증 경로로 진입한다
+
+**And** Tauri runtime에서는 기존 SQLite 초기화, migration, notification 동작이 유지된다
+**And** 브라우저 검증 경로는 mock/in-memory adapter 또는 동등한 harness를 사용해 Home -> 주제 선택 -> 학습 시작 -> 세션 완료 -> 휴식 시작 흐름을 재현할 수 있다
+**And** browser 검증 모드는 사용자 제공 플랫폼 범위가 아니라 internal QA 용으로만 노출된다
+**And** 새로운 runtime seam이 UI에서 Tauri plugin 직접 호출을 늘리지 않는다
+
+### Story 3.6: 세션 중단 및 회복 플로우
 
 As a 학습자,
 I want 세션을 끝까지 완료하지 못해도 현재 상태를 이해하고 다시 이어갈 수 있기를,

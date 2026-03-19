@@ -1,4 +1,4 @@
-import { createTopic, findAllTopics, updateTopic, archiveTopic } from '../../domain/topics/topic-repository';
+import { createTopic, findAllTopics, updateTopic, archiveTopic } from '../../platform/browser/topic-adapter';
 import type { Topic, CreateTopicInput, UpdateTopicInput } from '../../domain/topics/topic';
 import type { Result } from '../../shared/lib/result';
 

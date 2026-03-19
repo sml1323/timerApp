@@ -145,7 +145,7 @@ PRD는 체계적으로 구성되어 있으며, 기능 요구사항(39개)과 비
 | FR5 | 휴식 세션 전환 | Epic 3 (Story 3.4) | ✓ Covered |
 | FR6 | 완료 세션 자동 기록 | Epic 3 (Story 3.3) | ✓ Covered |
 | FR7 | 학습/휴식 세션 구분 처리 | Epic 3 (Story 3.4) | ✓ Covered |
-| FR8 | 미완료 세션 상태 인지 | Epic 3 (Story 3.5) | ✓ Covered |
+| FR8 | 미완료 세션 상태 인지 | Epic 3 (Story 3.6) | ✓ Covered |
 | FR9 | 학습 주제 생성 | Epic 2 (Story 2.2) | ✓ Covered |
 | FR10 | 주제 목록 확인 | Epic 2 (Story 2.2) | ✓ Covered |
 | FR11 | 주제 이름 수정 | Epic 2 (Story 2.3) | ✓ Covered |
