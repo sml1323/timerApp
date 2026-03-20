@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router';
 import { TopicQuickSelectPanel } from '../../features/session/components/TopicQuickSelectPanel';
 import { useTopicSelect } from '../../features/session/hooks/useTopicSelect';
 import { useGoalProgress } from '../../features/goals/hooks/useGoalProgress';
+import { useDashboardData } from '../../features/dashboard/hooks/useDashboardData';
+import { StudyStatusSummaryCard } from '../../features/dashboard/components/StudyStatusSummaryCard';
 import { beginStudySession } from '../../features/session/session-service';
 import { useSessionStore } from '../../features/session/state/sessionStore';
 import { Button } from '../../shared/ui/Button/Button';
@@ -14,6 +16,7 @@ export function HomeRoute() {
   const activeSession = useSessionStore((state) => state.activeSession);
   const sessionPhase = useSessionStore((state) => state.sessionPhase);
   const { progressList } = useGoalProgress();
+  const { data: dashboardData, isLoading: isDashboardLoading, error: dashboardError } = useDashboardData();
 
   const goalProgressMap = useMemo(() => {
     const map = new Map<string, (typeof progressList)[number]>();
@@ -64,7 +67,11 @@ export function HomeRoute() {
   return (
     <section className={styles.homePage}>
       <h1>홈</h1>
-      {/* Study Status Summary Card → Story 5.2에서 구현 */}
+      <StudyStatusSummaryCard
+        data={dashboardData}
+        isLoading={isDashboardLoading}
+        error={dashboardError}
+      />
       <section aria-label="주제 선택 및 세션 시작" className={styles.quickStartSection}>
         <h2>학습 시작</h2>
         {totalGoalCount > 0 && (

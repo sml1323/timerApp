@@ -1,0 +1,265 @@
+/* StudyStatusSummaryCard 스타일 */
+
+.card {
+  display: block;
+  width: 100%;
+  border: none;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-5);
+  cursor: pointer;
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+  outline: none;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+}
+
+.card:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* --- 에러 / 로딩 --- */
+
+.errorText {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  margin: 0;
+  text-align: center;
+  padding: var(--spacing-4) 0;
+}
+
+.skeleton {
+  height: 120px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-tertiary) 25%,
+    var(--color-bg-secondary) 37%,
+    var(--color-bg-tertiary) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* --- 빈 상태 --- */
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4) 0;
+}
+
+.emptyMessage {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.emptyHint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* --- 카드 컨텐츠 레이아웃 --- */
+
+.cardContent {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: var(--spacing-4);
+}
+
+.statsArea {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  gap: var(--spacing-6);
+}
+
+.goalArea {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.noGoalArea {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.characterArea {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- 통계 블록 --- */
+
+.statBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.statLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.statValue {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.statSub {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* --- 목표 영역 --- */
+
+.goalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goalTitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.goalPercent {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+}
+
+.goalPercent[data-state="nearing"] {
+  color: var(--color-warning);
+}
+
+.goalPercent[data-state="achieved"] {
+  color: var(--color-success);
+}
+
+/* --- 프로그레스바 --- */
+
+.progressTrack {
+  height: 8px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-slow);
+}
+
+.progressFill[data-state="nearing"] {
+  background: var(--color-warning);
+}
+
+.progressFill[data-state="achieved"] {
+  background: var(--color-success);
+}
+
+/* --- 진행 상태 텍스트 --- */
+
+.goalDetails {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-xs);
+}
+
+.achievedLabel {
+  color: var(--color-success);
+  font-weight: var(--font-weight-semibold);
+}
+
+.nearingLabel {
+  color: var(--color-warning);
+  font-weight: var(--font-weight-semibold);
+}
+
+.remainingText {
+  color: var(--color-text-secondary);
+}
+
+.goalCount {
+  color: var(--color-text-tertiary);
+  margin-left: auto;
+}
+
+/* --- 목표 미설정 --- */
+
+.noGoalText {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  margin: 0;
+}
+
+/* --- 캐릭터 --- */
+
+.character {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+/* --- 반응형 --- */
+
+@media (max-width: 600px) {
+  .card {
+    padding: var(--spacing-4);
+  }
+
+  .characterArea {
+    display: none;
+  }
+
+  .cardContent {
+    grid-template-columns: 1fr;
+  }
+
+  .statValue {
+    font-size: var(--font-size-xl);
+  }
+
+  .character {
+    width: 48px;
+    height: 48px;
+  }
+}

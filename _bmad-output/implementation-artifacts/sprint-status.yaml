@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-03-17T17:51:51+09:00
-last_updated: 2026-03-20T10:00:00+09:00
+last_updated: 2026-03-20T13:11:00+09:00
 project: bmad_test
 project_key: NOKEY
 tracking_system: file-system
@@ -78,9 +78,9 @@ development_status:
   # Epic 5: 대시보드 및 통계
   epic-5: in-progress
   5-1-통계-도메인-모델-및-쿼리-구현: done
-  5-2-홈-대시보드-study-status-summary-card: backlog
-  5-3-통계-화면-구현: backlog
-  5-4-세션-완료-후-통계-즉시-갱신: backlog
+  5-2-홈-대시보드-study-status-summary-card: done
+  5-3-통계-화면-구현: done
+  5-4-세션-완료-후-통계-즉시-갱신: done
   epic-5-retrospective: optional
 
   # Epic 6: 기록 정정 및 데이터 신뢰성

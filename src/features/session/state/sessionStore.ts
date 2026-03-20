@@ -10,6 +10,7 @@ interface SessionState {
   selectedTopicId: string | null;
   selectedTopicName: string | null;
   completedSession: Session | null;
+  lastCompletedAtMs: number | null;
 
   startSession: (session: Session) => void;
   endSession: (session: Session) => void;
@@ -24,6 +25,7 @@ const initialState = {
   selectedTopicId: null,
   selectedTopicName: null,
   completedSession: null,
+  lastCompletedAtMs: null as number | null,
 };
 
 export const useSessionStore = create<SessionState>((set) => ({
@@ -33,13 +35,26 @@ export const useSessionStore = create<SessionState>((set) => ({
     set({ activeSession: session, sessionPhase: 'running', completedSession: null }),
 
   endSession: (session: Session) =>
-    set({ activeSession: session, sessionPhase: 'completed', completedSession: session }),
+    set({
+      activeSession: session,
+      sessionPhase: 'completed',
+      completedSession: session,
+      lastCompletedAtMs: Date.now(),
+    }),
 
   interruptCurrentSession: (session: Session) =>
-    set({ sessionPhase: 'interrupted', completedSession: session }),
+    set({
+      sessionPhase: 'interrupted',
+      completedSession: session,
+      lastCompletedAtMs: Date.now(),
+    }),
 
   setSelectedTopic: (id: string | null, name: string | null) =>
     set({ selectedTopicId: id, selectedTopicName: name }),
 
-  reset: () => set(initialState),
+  reset: () =>
+    set({
+      ...initialState,
+      lastCompletedAtMs: useSessionStore.getState().lastCompletedAtMs,
+    }),
 }));

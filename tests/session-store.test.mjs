@@ -98,3 +98,69 @@ test('interruptCurrentSession preserves session data in completedSession for rec
   assert.equal(state.selectedTopicId, 'topic-1');
   assert.equal(state.selectedTopicName, '자료구조');
 });
+
+test('endSession sets lastCompletedAtMs to a positive timestamp', () => {
+  const store = useSessionStore.getState();
+  store.startSession(runningStudySession);
+
+  const before = Date.now();
+  store.endSession(completedStudySession);
+  const after = Date.now();
+
+  const state = useSessionStore.getState();
+  assert.ok(state.lastCompletedAtMs !== null, 'lastCompletedAtMs should not be null');
+  assert.ok(state.lastCompletedAtMs >= before, 'lastCompletedAtMs should be >= before');
+  assert.ok(state.lastCompletedAtMs <= after, 'lastCompletedAtMs should be <= after');
+});
+
+test('interruptCurrentSession sets lastCompletedAtMs to a positive timestamp', () => {
+  const store = useSessionStore.getState();
+  store.startSession(runningStudySession);
+
+  const interruptedSession = {
+    ...runningStudySession,
+    status: 'interrupted',
+    endedAtMs: 1800,
+    updatedAtMs: 1800,
+  };
+
+  const before = Date.now();
+  store.interruptCurrentSession(interruptedSession);
+  const after = Date.now();
+
+  const state = useSessionStore.getState();
+  assert.ok(state.lastCompletedAtMs !== null, 'lastCompletedAtMs should not be null');
+  assert.ok(state.lastCompletedAtMs >= before, 'lastCompletedAtMs should be >= before');
+  assert.ok(state.lastCompletedAtMs <= after, 'lastCompletedAtMs should be <= after');
+});
+
+test('reset preserves lastCompletedAtMs from before reset', () => {
+  const store = useSessionStore.getState();
+  store.startSession(runningStudySession);
+  store.endSession(completedStudySession);
+
+  const stateAfterEnd = useSessionStore.getState();
+  const savedTimestamp = stateAfterEnd.lastCompletedAtMs;
+  assert.ok(savedTimestamp !== null, 'lastCompletedAtMs should be set after endSession');
+
+  store.reset();
+
+  const stateAfterReset = useSessionStore.getState();
+  assert.equal(stateAfterReset.activeSession, null, 'activeSession should be null after reset');
+  assert.equal(stateAfterReset.sessionPhase, 'idle', 'sessionPhase should be idle after reset');
+  assert.equal(stateAfterReset.lastCompletedAtMs, savedTimestamp, 'lastCompletedAtMs should be preserved after reset');
+});
+
+test('startSession does not change lastCompletedAtMs', () => {
+  const store = useSessionStore.getState();
+  store.endSession(completedStudySession);
+
+  const stateAfterEnd = useSessionStore.getState();
+  const savedTimestamp = stateAfterEnd.lastCompletedAtMs;
+
+  store.startSession(runningBreakSession);
+
+  const stateAfterStart = useSessionStore.getState();
+  assert.equal(stateAfterStart.lastCompletedAtMs, savedTimestamp, 'lastCompletedAtMs should not change on startSession');
+});
+
