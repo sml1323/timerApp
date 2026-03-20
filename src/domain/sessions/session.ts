@@ -33,3 +33,9 @@ export interface CompleteSessionInput {
 export interface InterruptSessionInput {
   sessionId: string;
 }
+
+/** 세션 주제 재할당 입력 */
+export interface ReassignSessionTopicInput {
+  sessionId: string;
+  newTopicId: string;
+}

@@ -16,3 +16,9 @@ export const CompleteSessionSchema = z.object({
 export const InterruptSessionSchema = z.object({
   sessionId: z.string().min(1, '세션 ID가 필요합니다'),
 });
+
+/** 세션 주제 재할당 검증 */
+export const ReassignSessionTopicSchema = z.object({
+  sessionId: z.string().min(1, '세션 ID가 필요합니다'),
+  newTopicId: z.string().min(1, '주제 ID가 필요합니다'),
+});

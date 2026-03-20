@@ -26,6 +26,10 @@
     "src/platform/runtime/runtime-detect.ts",
     "src/platform/browser/goal-adapter.ts",
     "src/platform/browser/in-memory-goal-adapter.ts",
+    "src/platform/browser/session-adapter.ts",
+    "src/platform/browser/in-memory-session-adapter.ts",
+    "src/domain/sessions/session-schema.ts",
+    "src/domain/sessions/session-transitions.ts",
     "src/features/goals/goal-service.ts"
   ]
 }

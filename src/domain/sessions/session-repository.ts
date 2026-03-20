@@ -1,9 +1,9 @@
 import { select, execute } from '../../platform/tauri/sql-client';
 import { ok, err, type Result } from '../../shared/lib/result';
 import { ERROR_CODES } from '../../shared/lib/errors';
-import type { Session, CreateSessionInput, CompleteSessionInput, InterruptSessionInput } from './session';
+import type { Session, CreateSessionInput, CompleteSessionInput, InterruptSessionInput, ReassignSessionTopicInput } from './session';
 import { type SessionRow, toSession } from './session-mappers';
-import { CreateSessionSchema, CompleteSessionSchema, InterruptSessionSchema } from './session-schema';
+import { CreateSessionSchema, CompleteSessionSchema, InterruptSessionSchema, ReassignSessionTopicSchema } from './session-schema';
 import { validateTransition } from './session-transitions';
 
 const SINGLE_RUNNING_SESSION_INDEX = 'idx_sessions_single_running';
@@ -209,6 +209,56 @@ export async function findSessionsByDateRange(startMs: number, endMs: number): P
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
       `세션 목록 조회 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+/**
+ * 완료/중단된 세션의 주제를 변경한다.
+ * - Zod 검증 → 세션 존재+완료/중단 확인 → 새 topicId 존재 확인 → UPDATE topic_id → 갱신된 row 반환
+ */
+export async function reassignSessionTopic(input: ReassignSessionTopicInput): Promise<Result<Session>> {
+  try {
+    const parsed = ReassignSessionTopicSchema.safeParse(input);
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0];
+      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? '입력값이 올바르지 않습니다');
+    }
+    const { sessionId, newTopicId } = parsed.data;
+
+    // 1. 세션 존재 + 상태 확인
+    const sessionRows = await select<SessionRow>('SELECT * FROM sessions WHERE id = $1', [sessionId]);
+    if (sessionRows.length === 0) {
+      return err(ERROR_CODES.NOT_FOUND, '세션을 찾을 수 없습니다');
+    }
+    const session = toSession(sessionRows[0]);
+    if (session.status !== 'completed' && session.status !== 'interrupted') {
+      return err(ERROR_CODES.SESSION_STATE_CONFLICT, '완료되거나 중단된 세션만 주제를 변경할 수 있습니다');
+    }
+
+    // 2. 새 topicId 존재 확인
+    const topicRows = await select<{ id: string }>('SELECT id FROM topics WHERE id = $1', [newTopicId]);
+    if (topicRows.length === 0) {
+      return err(ERROR_CODES.NOT_FOUND, '주제를 찾을 수 없습니다');
+    }
+
+    // 3. UPDATE topic_id
+    const now = Date.now();
+    await execute(
+      'UPDATE sessions SET topic_id = $1, updated_at_ms = $2 WHERE id = $3',
+      [newTopicId, now, sessionId],
+    );
+
+    // 4. 갱신된 row 반환
+    const rows = await select<SessionRow>('SELECT * FROM sessions WHERE id = $1', [sessionId]);
+    if (rows.length === 0) {
+      return err(ERROR_CODES.PERSISTENCE_ERROR, '세션 갱신 후 조회에 실패했습니다');
+    }
+    return ok(toSession(rows[0]));
+  } catch (error) {
+    return err(
+      ERROR_CODES.PERSISTENCE_ERROR,
+      `세션 주제 변경 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }

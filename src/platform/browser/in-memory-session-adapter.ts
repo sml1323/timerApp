@@ -8,10 +8,11 @@ import type {
   CreateSessionInput,
   CompleteSessionInput,
   InterruptSessionInput,
+  ReassignSessionTopicInput,
 } from '../../domain/sessions/session';
 import { ok, err, type Result } from '../../shared/lib/result';
 import { ERROR_CODES } from '../../shared/lib/errors';
-import { CreateSessionSchema, CompleteSessionSchema, InterruptSessionSchema } from '../../domain/sessions/session-schema';
+import { CreateSessionSchema, CompleteSessionSchema, InterruptSessionSchema, ReassignSessionTopicSchema } from '../../domain/sessions/session-schema';
 import { validateTransition } from '../../domain/sessions/session-transitions';
 
 /** in-memory 저장소 */
@@ -146,6 +147,34 @@ export async function getWeeklyStudyMinutesByTopic(
     }
   }
   return ok(map);
+}
+
+export async function reassignSessionTopic(input: ReassignSessionTopicInput): Promise<Result<Session>> {
+  const parsed = ReassignSessionTopicSchema.safeParse(input);
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0];
+    return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? '입력값이 올바르지 않습니다');
+  }
+  const { sessionId, newTopicId } = parsed.data;
+
+  const index = store.findIndex((s) => s.id === sessionId);
+  if (index === -1) {
+    return err(ERROR_CODES.NOT_FOUND, '세션을 찾을 수 없습니다');
+  }
+
+  const session = store[index];
+  if (session.status !== 'completed' && session.status !== 'interrupted') {
+    return err(ERROR_CODES.SESSION_STATE_CONFLICT, '완료되거나 중단된 세션만 주제를 변경할 수 있습니다');
+  }
+
+  if (!topicExistsCheck(newTopicId)) {
+    return err(ERROR_CODES.NOT_FOUND, '주제를 찾을 수 없습니다');
+  }
+
+  const now = Date.now();
+  const updated: Session = { ...session, topicId: newTopicId, updatedAtMs: now };
+  store[index] = updated;
+  return ok(updated);
 }
 
 /** 읽기 전용 세션 store 접근자 — in-memory-statistics-adapter에서 사용 */

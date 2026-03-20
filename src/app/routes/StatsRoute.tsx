@@ -1,11 +1,43 @@
+import { useState, useCallback } from 'react';
 import { useStatistics } from '../../features/stats/hooks/useStatistics';
 import { StatsSummaryCard } from '../../features/stats/components/StatsSummaryCard';
 import { TopicBreakdownList } from '../../features/stats/components/TopicBreakdownList';
+import { useRecordCorrection } from '../../features/records/hooks/useRecordCorrection';
+import { useTopics } from '../../features/topics/hooks/useTopics';
+import { RecordList } from '../../features/records/components/RecordList';
+import { RecordCorrectionDialog } from '../../features/records/components/RecordCorrectionDialog';
+import type { SessionRecordItem } from '../../features/records/record-correction-service';
 import defaultCharacter from '../../assets/characters/default.svg';
 import styles from './StatsRoute.module.css';
 
 export function StatsRoute() {
-  const { data, isLoading, error } = useStatistics();
+  const { data, isLoading, error, refetch: refetchStats } = useStatistics();
+  const { records, isLoading: recordsLoading, error: recordsError, reassignTopic } = useRecordCorrection();
+  const { topics } = useTopics();
+
+  const [correctionTarget, setCorrectionTarget] = useState<SessionRecordItem | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleCorrect = useCallback((sessionId: string) => {
+    const target = records.find((r) => r.session.id === sessionId);
+    if (target) {
+      setCorrectionTarget(target);
+      setIsDialogOpen(true);
+    }
+  }, [records]);
+
+  const handleSave = useCallback(async (sessionId: string, newTopicId: string) => {
+    const result = await reassignTopic(sessionId, newTopicId);
+    if (result.ok) {
+      refetchStats();
+    }
+    return result;
+  }, [reassignTopic, refetchStats]);
+
+  const handleDialogClose = useCallback(() => {
+    setIsDialogOpen(false);
+    setCorrectionTarget(null);
+  }, []);
 
   if (error) {
     return (
@@ -43,6 +75,22 @@ export function StatsRoute() {
       <h1>통계</h1>
       <StatsSummaryCard today={data.today} weekly={data.weekly} />
       <TopicBreakdownList topics={data.byTopic} totalMinutes={data.totalMinutesAllTime} />
+
+      <RecordList
+        records={records}
+        isLoading={recordsLoading}
+        error={recordsError}
+        onCorrect={handleCorrect}
+      />
+
+      <RecordCorrectionDialog
+        record={correctionTarget}
+        topics={topics}
+        isOpen={isDialogOpen}
+        onClose={handleDialogClose}
+        onSave={handleSave}
+      />
     </section>
   );
 }
+

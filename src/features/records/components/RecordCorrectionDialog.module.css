@@ -1,0 +1,145 @@
+/* RecordCorrectionDialog — 기록 주제 수정 다이얼로그 */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  animation: fadeIn var(--transition-fast) ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dialog {
+  width: 100%;
+  max-width: 420px;
+  margin: var(--spacing-4);
+  padding: var(--spacing-6);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  animation: slideUp var(--transition-normal) ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  margin: 0 0 var(--spacing-4);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.editableLabel {
+  color: var(--color-primary);
+}
+
+/* 수정 가능 필드 */
+.select {
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background: var(--color-bg-default);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color var(--transition-fast);
+  box-sizing: border-box;
+  appearance: auto;
+}
+
+.select:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb, 99, 102, 241), 0.15);
+}
+
+/* 수정 불가 필드 */
+.readonlyField {
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-disabled, var(--color-bg-tertiary));
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.readonlyHint {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-text-tertiary, var(--color-text-secondary));
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.lockIcon {
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.statusTag {
+  display: inline-block;
+  font-size: var(--font-size-xs, 0.75rem);
+  padding: 1px var(--spacing-1);
+  border-radius: var(--radius-sm);
+  margin-left: var(--spacing-1);
+}
+
+.editableTag {
+  background: rgba(var(--color-primary-rgb, 99, 102, 241), 0.1);
+  color: var(--color-primary);
+}
+
+.readonlyTag {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-tertiary, var(--color-text-secondary));
+}
+
+/* 에러 */
+.errorMessage {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+}
+
+/* 액션 */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-5);
+}

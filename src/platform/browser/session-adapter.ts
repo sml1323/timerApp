@@ -8,6 +8,7 @@ import type {
   CreateSessionInput,
   CompleteSessionInput,
   InterruptSessionInput,
+  ReassignSessionTopicInput,
 } from '../../domain/sessions/session';
 import type { Result } from '../../shared/lib/result';
 
@@ -18,6 +19,7 @@ export interface SessionRepositoryAdapter {
   interruptSession(input: InterruptSessionInput): Promise<Result<Session>>;
   findSessionsByDateRange(startMs: number, endMs: number): Promise<Result<Session[]>>;
   getWeeklyStudyMinutesByTopic(weekStartAtMs: number): Promise<Result<Map<string, number>>>;
+  reassignSessionTopic(input: ReassignSessionTopicInput): Promise<Result<Session>>;
 }
 
 let adapter: SessionRepositoryAdapter | null = null;
@@ -59,4 +61,8 @@ export async function findSessionsByDateRange(startMs: number, endMs: number): P
 
 export async function getWeeklyStudyMinutesByTopic(weekStartAtMs: number): Promise<Result<Map<string, number>>> {
   return (await getAdapter()).getWeeklyStudyMinutesByTopic(weekStartAtMs);
+}
+
+export async function reassignSessionTopic(input: ReassignSessionTopicInput): Promise<Result<Session>> {
+  return (await getAdapter()).reassignSessionTopic(input);
 }
