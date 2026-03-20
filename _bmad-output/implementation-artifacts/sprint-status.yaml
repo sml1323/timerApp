@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-03-17T17:51:51+09:00
-last_updated: 2026-03-19T23:39:46+09:00
+last_updated: 2026-03-20T09:39:14+09:00
 project: bmad_test
 project_key: NOKEY
 tracking_system: file-system
@@ -72,7 +72,7 @@ development_status:
   epic-4: in-progress
   4-1-주간-목표-도메인-모델-및-저장소-구현: done
   4-2-주간-목표-설정-ui-구현: done
-  4-3-주간-목표-대비-진행-상태-표시: backlog
+  4-3-주간-목표-대비-진행-상태-표시: done
   epic-4-retrospective: optional
 
   # Epic 5: 대시보드 및 통계

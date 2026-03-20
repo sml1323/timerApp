@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { Link } from 'react-router';
 import type { Topic } from '../../../domain/topics/topic';
+import type { GoalProgress } from '../../goals/goal-service';
+import { GoalProgressInline } from '../../goals/components/GoalProgressInline';
 import { cn } from '../../../shared/lib/cn';
 import defaultCharacter from '../../../assets/characters/default.svg';
 import styles from './TopicQuickSelectPanel.module.css';
@@ -11,6 +13,7 @@ interface TopicQuickSelectPanelProps {
   error: string | null;
   selectedTopicId: string | null;
   onSelectTopic: (id: string) => void;
+  goalProgressMap?: Map<string, GoalProgress>;
 }
 
 export function TopicQuickSelectPanel({
@@ -19,6 +22,7 @@ export function TopicQuickSelectPanel({
   error,
   selectedTopicId,
   onSelectTopic,
+  goalProgressMap,
 }: TopicQuickSelectPanelProps) {
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -102,21 +106,29 @@ export function TopicQuickSelectPanel({
       onKeyDown={handleKeyDown}
       className={styles.panel}
     >
-      {topics.map((topic) => (
-        <div
-          key={topic.id}
-          id={`topic-option-${topic.id}`}
-          role="option"
-          aria-selected={topic.id === selectedTopicId}
-          onClick={() => onSelectTopic(topic.id)}
-          className={cn(
-            styles.topicItem,
-            topic.id === selectedTopicId && styles.selected,
-          )}
-        >
-          {topic.name}
-        </div>
-      ))}
+      {topics.map((topic) => {
+        const progress = goalProgressMap?.get(topic.id);
+        return (
+          <div
+            key={topic.id}
+            id={`topic-option-${topic.id}`}
+            role="option"
+            aria-selected={topic.id === selectedTopicId}
+            onClick={() => onSelectTopic(topic.id)}
+            className={cn(
+              styles.topicItem,
+              topic.id === selectedTopicId && styles.selected,
+            )}
+          >
+            <span className={styles.topicName}>{topic.name}</span>
+            {progress && (
+              <div className={styles.topicProgress}>
+                <GoalProgressInline progress={progress} variant="compact" />
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

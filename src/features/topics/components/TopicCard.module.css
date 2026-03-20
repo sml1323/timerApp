@@ -138,3 +138,10 @@
   border-radius: var(--radius-full);
   white-space: nowrap;
 }
+
+/* --- 목표 진행률 --- */
+.goalProgressArea {
+  flex: 1;
+  min-width: 0;
+  max-width: 200px;
+}

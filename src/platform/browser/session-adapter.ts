@@ -17,6 +17,7 @@ export interface SessionRepositoryAdapter {
   completeSession(input: CompleteSessionInput): Promise<Result<Session>>;
   interruptSession(input: InterruptSessionInput): Promise<Result<Session>>;
   findSessionsByDateRange(startMs: number, endMs: number): Promise<Result<Session[]>>;
+  getWeeklyStudyMinutesByTopic(weekStartAtMs: number): Promise<Result<Map<string, number>>>;
 }
 
 let adapter: SessionRepositoryAdapter | null = null;
@@ -26,7 +27,8 @@ async function getAdapter(): Promise<SessionRepositoryAdapter> {
 
   if (isTauriRuntime()) {
     const mod = await import('../../domain/sessions/session-repository');
-    adapter = mod;
+    const statsMod = await import('../../domain/sessions/session-statistics');
+    adapter = { ...mod, getWeeklyStudyMinutesByTopic: statsMod.getWeeklyStudyMinutesByTopic };
   } else {
     const mod = await import('./in-memory-session-adapter');
     adapter = mod;
@@ -53,4 +55,8 @@ export async function interruptSession(input: InterruptSessionInput): Promise<Re
 
 export async function findSessionsByDateRange(startMs: number, endMs: number): Promise<Result<Session[]>> {
   return (await getAdapter()).findSessionsByDateRange(startMs, endMs);
+}
+
+export async function getWeeklyStudyMinutesByTopic(weekStartAtMs: number): Promise<Result<Map<string, number>>> {
+  return (await getAdapter()).getWeeklyStudyMinutesByTopic(weekStartAtMs);
 }

@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from 'react';
 import type { Topic } from '../../../domain/topics/topic';
 import type { WeeklyGoal } from '../../../domain/goals/weekly-goal';
+import type { GoalProgress } from '../../goals/goal-service';
+import { GoalProgressInline } from '../../goals/components/GoalProgressInline';
 import { UpdateTopicSchema } from '../../../domain/topics/topic-schema';
 import { Button } from '../../../shared/ui/Button';
 import { cn } from '../../../shared/lib/cn';
@@ -9,6 +11,7 @@ import styles from './TopicCard.module.css';
 interface TopicCardProps {
   topic: Topic;
   weeklyGoal?: WeeklyGoal | null;
+  goalProgress?: GoalProgress | null;
   onEdit: (id: string, name: string) => Promise<{ ok: boolean; message?: string }>;
   onArchive: (id: string) => Promise<{ ok: boolean; message?: string }>;
   onOpenGoalDialog?: (topicId: string) => void;
@@ -22,7 +25,7 @@ function formatDate(ms: number): string {
   }).format(new Date(ms));
 }
 
-export function TopicCard({ topic, weeklyGoal, onEdit, onArchive, onOpenGoalDialog }: TopicCardProps) {
+export function TopicCard({ topic, weeklyGoal, goalProgress, onEdit, onArchive, onOpenGoalDialog }: TopicCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(topic.name);
   const [editError, setEditError] = useState<string | null>(null);
@@ -191,9 +194,13 @@ export function TopicCard({ topic, weeklyGoal, onEdit, onArchive, onOpenGoalDial
     <div className={styles.card}>
       <div className={styles.info}>
         <span className={styles.name}>{topic.name}</span>
-        {weeklyGoal && (
+        {goalProgress ? (
+          <div className={styles.goalProgressArea}>
+            <GoalProgressInline progress={goalProgress} />
+          </div>
+        ) : weeklyGoal ? (
           <span className={styles.goalBadge}>목표: {weeklyGoal.targetMinutes}분/주</span>
-        )}
+        ) : null}
         <span className={styles.date}>{formatDate(topic.createdAtMs)}</span>
       </div>
       <div className={styles.actions}>

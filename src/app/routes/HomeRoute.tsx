@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { TopicQuickSelectPanel } from '../../features/session/components/TopicQuickSelectPanel';
 import { useTopicSelect } from '../../features/session/hooks/useTopicSelect';
+import { useGoalProgress } from '../../features/goals/hooks/useGoalProgress';
 import { beginStudySession } from '../../features/session/session-service';
 import { useSessionStore } from '../../features/session/state/sessionStore';
 import { Button } from '../../shared/ui/Button/Button';
@@ -12,6 +13,18 @@ export function HomeRoute() {
   const { topics, isLoading, error, selectedTopicId, selectTopic, isReady } = useTopicSelect();
   const activeSession = useSessionStore((state) => state.activeSession);
   const sessionPhase = useSessionStore((state) => state.sessionPhase);
+  const { progressList } = useGoalProgress();
+
+  const goalProgressMap = useMemo(() => {
+    const map = new Map<string, (typeof progressList)[number]>();
+    for (const p of progressList) {
+      map.set(p.topicId, p);
+    }
+    return map;
+  }, [progressList]);
+
+  const achievedCount = progressList.filter((p) => p.isAchieved).length;
+  const totalGoalCount = progressList.length;
 
   const [startError, setStartError] = useState<string | null>(null);
   const [isStarting, setIsStarting] = useState(false);
@@ -54,6 +67,11 @@ export function HomeRoute() {
       {/* Study Status Summary Card → Story 5.2에서 구현 */}
       <section aria-label="주제 선택 및 세션 시작" className={styles.quickStartSection}>
         <h2>학습 시작</h2>
+        {totalGoalCount > 0 && (
+          <p className={styles.goalSummary}>
+            이번 주 목표 {totalGoalCount}개 중 {achievedCount}개 달성
+          </p>
+        )}
         {hasRunningSession && (
           <div className={styles.resumeNotice}>
             <p className={styles.resumeMessage}>이미 진행 중인 세션이 있습니다.</p>
@@ -68,6 +86,7 @@ export function HomeRoute() {
           error={error}
           selectedTopicId={selectedTopicId}
           onSelectTopic={selectTopic}
+          goalProgressMap={goalProgressMap}
         />
         {startError && (
           <p role="alert" className={styles.errorMessage}>

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTopics } from './hooks/useTopics';
 import { useWeeklyGoals } from '../goals/hooks/useWeeklyGoals';
+import { useGoalProgress } from '../goals/hooks/useGoalProgress';
 import { TopicForm } from './components/TopicForm';
 import { TopicList } from './components/TopicList';
 import { GoalSettingsDialog } from '../goals/components/GoalSettingsDialog';
@@ -10,6 +11,15 @@ import styles from './TopicsPage.module.css';
 export function TopicsPage() {
   const { topics, isLoading, error, createNewTopic, updateExistingTopic, archiveExistingTopic } = useTopics();
   const { goals, saveGoalForTopic } = useWeeklyGoals();
+  const { progressList } = useGoalProgress();
+
+  const goalProgressMap = useMemo(() => {
+    const map = new Map<string, (typeof progressList)[number]>();
+    for (const p of progressList) {
+      map.set(p.topicId, p);
+    }
+    return map;
+  }, [progressList]);
 
   const [goalDialogTopicId, setGoalDialogTopicId] = useState<string | null>(null);
 
@@ -77,6 +87,7 @@ export function TopicsPage() {
           <TopicList
             topics={topics}
             weeklyGoals={goals}
+            goalProgressMap={goalProgressMap}
             onEdit={handleEdit}
             onArchive={handleArchive}
             onOpenGoalDialog={handleOpenGoalDialog}

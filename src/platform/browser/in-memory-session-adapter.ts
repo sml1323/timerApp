@@ -127,3 +127,23 @@ export async function findSessionsByDateRange(startMs: number, endMs: number): P
     .sort((a, b) => b.startedAtMs - a.startedAtMs);
   return ok(sessions);
 }
+
+export async function getWeeklyStudyMinutesByTopic(
+  weekStartAtMs: number
+): Promise<Result<Map<string, number>>> {
+  const weekEndAtMs = weekStartAtMs + 7 * 24 * 60 * 60 * 1000;
+  const map = new Map<string, number>();
+
+  for (const s of store) {
+    if (
+      s.phaseType === 'study' &&
+      s.status === 'completed' &&
+      s.startedAtMs >= weekStartAtMs &&
+      s.startedAtMs < weekEndAtMs
+    ) {
+      const mins = Math.round(s.plannedDurationSec / 60);
+      map.set(s.topicId, (map.get(s.topicId) ?? 0) + mins);
+    }
+  }
+  return ok(map);
+}
