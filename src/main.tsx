@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router";
 import { router } from "./app/router";
 import { isTauriRuntime } from "./platform/runtime/runtime-detect";
+import { recoverAbandonedSessions } from "./platform/browser/session-adapter";
 import "./shared/styles/globals.css";
 
 /**
@@ -14,6 +15,7 @@ async function initializeAppRuntime(): Promise<void> {
   if (isTauriRuntime()) {
     const { initializeDatabase } = await import("./db/bootstrap/initializeDatabase");
     await initializeDatabase();
+    await runSessionRecovery();
     return;
   }
 
@@ -21,11 +23,29 @@ async function initializeAppRuntime(): Promise<void> {
   if (import.meta.env.DEV) {
     const { initializeBrowserQaRuntime } = await import("./platform/browser/browser-qa-bootstrap");
     await initializeBrowserQaRuntime();
+    await runSessionRecovery();
     return;
   }
 
   // production 브라우저 접근 — 에러 유도
   throw new Error("이 앱은 데스크톱 환경에서만 실행할 수 있습니다.");
+}
+
+/**
+ * 방치된 running 세션을 복구한다.
+ * 부트스트랩을 중단하지 않으며 결과만 로깅한다.
+ */
+async function runSessionRecovery(): Promise<void> {
+  try {
+    const result = await recoverAbandonedSessions();
+    if (result.ok && result.data > 0) {
+      console.info(`[Recovery] ${result.data}개의 방치된 세션을 interrupted로 복구했습니다.`);
+    } else if (!result.ok) {
+      console.warn(`[Recovery] 세션 복구 실패: ${result.message}`);
+    }
+  } catch (error) {
+    console.warn('[Recovery] 세션 복구 중 예외 발생:', error);
+  }
 }
 
 function App() {

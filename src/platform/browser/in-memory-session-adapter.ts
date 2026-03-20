@@ -177,6 +177,24 @@ export async function reassignSessionTopic(input: ReassignSessionTopicInput): Pr
   return ok(updated);
 }
 
+/**
+ * 방치된 running 세션을 interrupted로 일괄 전환한다.
+ * 앱 부트스트랩 시 호출하여 비정상 종료로 남은 세션을 정리한다.
+ */
+export async function recoverAbandonedSessions(): Promise<Result<number>> {
+  const now = Date.now();
+  let recovered = 0;
+
+  for (let i = 0; i < store.length; i++) {
+    if (store[i].status === 'running') {
+      store[i] = { ...store[i], status: 'interrupted', endedAtMs: now, updatedAtMs: now };
+      recovered++;
+    }
+  }
+
+  return ok(recovered);
+}
+
 /** 읽기 전용 세션 store 접근자 — in-memory-statistics-adapter에서 사용 */
 export function getSessionStore(): readonly Session[] {
   return store;

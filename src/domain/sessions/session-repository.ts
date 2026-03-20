@@ -262,3 +262,23 @@ export async function reassignSessionTopic(input: ReassignSessionTopicInput): Pr
     );
   }
 }
+
+/**
+ * 방치된 running 세션을 interrupted로 일괄 전환한다.
+ * 앱 부트스트랩 시 호출하여 비정상 종료로 남은 세션을 정리한다.
+ */
+export async function recoverAbandonedSessions(): Promise<Result<number>> {
+  try {
+    const now = Date.now();
+    const result = await execute(
+      "UPDATE sessions SET status = 'interrupted', ended_at_ms = $1, updated_at_ms = $2 WHERE status = 'running'",
+      [now, now],
+    );
+    return ok(result.rowsAffected);
+  } catch (error) {
+    return err(
+      ERROR_CODES.PERSISTENCE_ERROR,
+      `방치 세션 복구 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}

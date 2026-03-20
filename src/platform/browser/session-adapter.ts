@@ -20,6 +20,7 @@ export interface SessionRepositoryAdapter {
   findSessionsByDateRange(startMs: number, endMs: number): Promise<Result<Session[]>>;
   getWeeklyStudyMinutesByTopic(weekStartAtMs: number): Promise<Result<Map<string, number>>>;
   reassignSessionTopic(input: ReassignSessionTopicInput): Promise<Result<Session>>;
+  recoverAbandonedSessions(): Promise<Result<number>>;
 }
 
 let adapter: SessionRepositoryAdapter | null = null;
@@ -65,4 +66,8 @@ export async function getWeeklyStudyMinutesByTopic(weekStartAtMs: number): Promi
 
 export async function reassignSessionTopic(input: ReassignSessionTopicInput): Promise<Result<Session>> {
   return (await getAdapter()).reassignSessionTopic(input);
+}
+
+export async function recoverAbandonedSessions(): Promise<Result<number>> {
+  return (await getAdapter()).recoverAbandonedSessions();
 }
