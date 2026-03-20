@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { CorrectionFeedback } from '../../features/records/components/CorrectionFeedback';
 import { useStatistics } from '../../features/stats/hooks/useStatistics';
 import { StatsSummaryCard } from '../../features/stats/components/StatsSummaryCard';
 import { TopicBreakdownList } from '../../features/stats/components/TopicBreakdownList';
@@ -17,6 +18,7 @@ export function StatsRoute() {
 
   const [correctionTarget, setCorrectionTarget] = useState<SessionRecordItem | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const handleCorrect = useCallback((sessionId: string) => {
     const target = records.find((r) => r.session.id === sessionId);
@@ -30,9 +32,14 @@ export function StatsRoute() {
     const result = await reassignTopic(sessionId, newTopicId);
     if (result.ok) {
       refetchStats();
+      setShowFeedback(true);
     }
     return result;
   }, [reassignTopic, refetchStats]);
+
+  const handleDismissFeedback = useCallback(() => {
+    setShowFeedback(false);
+  }, []);
 
   const handleDialogClose = useCallback(() => {
     setIsDialogOpen(false);
@@ -89,6 +96,11 @@ export function StatsRoute() {
         isOpen={isDialogOpen}
         onClose={handleDialogClose}
         onSave={handleSave}
+      />
+
+      <CorrectionFeedback
+        isVisible={showFeedback}
+        onDismiss={handleDismissFeedback}
       />
     </section>
   );

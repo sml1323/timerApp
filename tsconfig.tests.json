@@ -30,6 +30,8 @@
     "src/platform/browser/in-memory-session-adapter.ts",
     "src/domain/sessions/session-schema.ts",
     "src/domain/sessions/session-transitions.ts",
-    "src/features/goals/goal-service.ts"
+    "src/features/goals/goal-service.ts",
+    "src/platform/browser/in-memory-statistics-adapter.ts",
+    "src/domain/statistics/statistics.ts"
   ]
 }

@@ -4,9 +4,9 @@
  * raw SQL을 해석하지 않고, in-memory session store에서 도메인 로직을 직접 구현한다.
  */
 import type { TodayStudySummary, WeeklyStudySummary, TopicStudySummary } from '../../domain/statistics/statistics';
-import { ok, type Result } from '../../shared/lib/result';
-import { getSessionStore } from './in-memory-session-adapter';
-import { findAllTopics } from './in-memory-topic-adapter';
+import { ok, type Result } from '../../shared/lib/result.js';
+import { getSessionStore } from './in-memory-session-adapter.js';
+import { findAllTopics } from './in-memory-topic-adapter.js';
 
 export async function getTodayStudySummary(
   todayStartMs: number

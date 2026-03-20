@@ -4,9 +4,9 @@
  * raw SQL을 해석하지 않고, 도메인 로직을 직접 구현한다.
  */
 import type { Topic, CreateTopicInput, UpdateTopicInput } from '../../domain/topics/topic';
-import { ok, err, type Result } from '../../shared/lib/result';
-import { ERROR_CODES } from '../../shared/lib/errors';
-import { CreateTopicSchema, UpdateTopicSchema } from '../../domain/topics/topic-schema';
+import { ok, err, type Result } from '../../shared/lib/result.js';
+import { ERROR_CODES } from '../../shared/lib/errors.js';
+import { CreateTopicSchema, UpdateTopicSchema } from '../../domain/topics/topic-schema.js';
 
 /** in-memory 저장소 */
 const store: Topic[] = [];
@@ -15,6 +15,10 @@ const store: Topic[] = [];
 export function seedTopics(topics: Topic[]): void {
   store.length = 0;
   store.push(...topics);
+}
+
+export function getTopicStore(): Topic[] {
+  return store;
 }
 
 export async function createTopic(input: CreateTopicInput): Promise<Result<Topic>> {

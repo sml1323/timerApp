@@ -10,10 +10,10 @@ import type {
   InterruptSessionInput,
   ReassignSessionTopicInput,
 } from '../../domain/sessions/session';
-import { ok, err, type Result } from '../../shared/lib/result';
-import { ERROR_CODES } from '../../shared/lib/errors';
-import { CreateSessionSchema, CompleteSessionSchema, InterruptSessionSchema, ReassignSessionTopicSchema } from '../../domain/sessions/session-schema';
-import { validateTransition } from '../../domain/sessions/session-transitions';
+import { ok, err, type Result } from '../../shared/lib/result.js';
+import { ERROR_CODES } from '../../shared/lib/errors.js';
+import { CreateSessionSchema, CompleteSessionSchema, InterruptSessionSchema, ReassignSessionTopicSchema } from '../../domain/sessions/session-schema.js';
+import { validateTransition } from '../../domain/sessions/session-transitions.js';
 
 /** in-memory 저장소 */
 const store: Session[] = [];

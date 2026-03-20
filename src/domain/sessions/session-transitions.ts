@@ -1,6 +1,6 @@
 import type { SessionStatus } from './session';
-import { ok, err, type Result } from '../../shared/lib/result';
-import { ERROR_CODES } from '../../shared/lib/errors';
+import { ok, err, type Result } from '../../shared/lib/result.js';
+import { ERROR_CODES } from '../../shared/lib/errors.js';
 
 /** 유효한 상태 전이 맵 */
 const VALID_TRANSITIONS: Record<SessionStatus, SessionStatus[]> = {
