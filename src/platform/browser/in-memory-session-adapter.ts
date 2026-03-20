@@ -147,3 +147,9 @@ export async function getWeeklyStudyMinutesByTopic(
   }
   return ok(map);
 }
+
+/** 읽기 전용 세션 store 접근자 — in-memory-statistics-adapter에서 사용 */
+export function getSessionStore(): readonly Session[] {
+  return store;
+}
+

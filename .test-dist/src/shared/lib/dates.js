@@ -9,3 +9,9 @@ export function getWeekStartAtMs(date = new Date()) {
     d.setUTCDate(d.getUTCDate() + diff);
     return d.getTime();
 }
+/**
+ * 오늘 자정(UTC 기준)의 epoch ms를 반환한다.
+ */
+export function getTodayStartAtMs(date = new Date()) {
+    return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+}
