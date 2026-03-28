@@ -1,9 +1,8 @@
 /* ============================================
-   전역 스타일
-   Story 1.2: 리셋, 기본 글꼴, 색상, 포커스 링
+   전역 스타일 — Living Minimal (Dark)
    ============================================ */
+@import "./fonts.css";
 @import "./tokens.css";
-@import "./utilities.css";
 
 /* --- CSS Reset --- */
 *,
@@ -16,7 +15,7 @@
 
 /* --- 기본 HTML 요소 --- */
 html {
-  font-size: 100%; /* 16px baseline */
+  font-size: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -27,8 +26,9 @@ body {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-normal);
+  letter-spacing: -0.012em;
   color: var(--color-text-primary);
-  background-color: var(--color-bg-primary);
+  background-color: var(--color-bg);
   min-height: 100vh;
 }
 
@@ -54,12 +54,12 @@ small {
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--color-text-secondary);
   text-decoration: none;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: var(--color-text-primary);
 }
 
 /* --- Images --- */
@@ -71,6 +71,7 @@ img, picture, video, canvas, svg {
 /* --- Form Defaults --- */
 input, button, textarea, select {
   font: inherit;
+  color: inherit;
 }
 
 button {
@@ -84,13 +85,12 @@ ul, ol {
   list-style: none;
 }
 
-/* --- 전역 키보드 포커스 링 (:focus-visible 기반) --- */
+/* --- 전역 키보드 포커스 링 --- */
 :focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
 }
 
-/* 마우스 클릭 시에는 포커스 링 제거 */
 :focus:not(:focus-visible) {
   outline: none;
 }
@@ -100,4 +100,22 @@ ul, ol {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* --- Custom Scrollbar (Dark) --- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
