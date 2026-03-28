@@ -22,13 +22,13 @@
         "maximizable": false,
         "minimizable": true,
         "closable": true,
-        "visible": false,
+        "visible": true,
         "decorations": false,
+        "transparent": true,
         "alwaysOnTop": true,
         "visibleOnAllWorkspaces": true,
-        "skipTaskbar": true,
+        "skipTaskbar": false,
         "acceptFirstMouse": true,
-        "preventOverflow": true,
         "shadow": true
       }
     ],

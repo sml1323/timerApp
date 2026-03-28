@@ -18,6 +18,7 @@ export function AppShell() {
 
   return (
     <div className={styles.shell} data-posture={posture}>
+      <div className={styles.dragHandle} data-tauri-drag-region />
       <div className={styles.glow} aria-hidden="true" />
       <MainNavigation />
       <main className={styles.content}>

@@ -28,7 +28,7 @@ body {
   line-height: var(--line-height-normal);
   letter-spacing: -0.012em;
   color: var(--color-text-primary);
-  background-color: var(--color-bg);
+  background-color: transparent;
   min-height: 100vh;
 }
 
@@ -100,6 +100,17 @@ ul, ol {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--color-bg);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* --- Window drag region (frameless window) --- */
+[data-tauri-drag-region] {
+  cursor: grab;
+}
+[data-tauri-drag-region]:active {
+  cursor: grabbing;
 }
 
 /* --- Custom Scrollbar (Dark) --- */

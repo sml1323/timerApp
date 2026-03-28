@@ -6,7 +6,19 @@
   flex-direction: column;
   min-height: 100vh;
   background: var(--color-bg);
+  border-radius: 16px;
   overflow: hidden;
+}
+
+/* Invisible drag handle at the top of the window */
+.dragHandle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 999;
+  -webkit-app-region: drag;
 }
 
 .content {
