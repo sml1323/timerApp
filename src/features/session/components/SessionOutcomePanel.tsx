@@ -13,9 +13,9 @@ interface SessionOutcomePanelProps {
   onViewStats: () => void;
   onGoHome: () => void;
   isBusy?: boolean;
-  /** recovery variant 전용: 이번 주 남은 목표 힌트 */
+  /** recovery variant: 이번 주 남은 목표 힌트 */
   recoveryHint?: string;
-  /** recovery variant 전용: 다른 주제 선택 핸들러 */
+  /** recovery variant: 다른 주제 선택 핸들러 */
   onSelectOtherTopic?: () => void;
 }
 
@@ -65,7 +65,7 @@ export function SessionOutcomePanel({
               다른 주제 선택
             </Button>
             <Button variant="text" onClick={onGoHome} disabled={isBusy}>
-              오늘은 종료
+              오늘은 여기까지
             </Button>
           </>
         ) : (

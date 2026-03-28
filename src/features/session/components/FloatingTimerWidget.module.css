@@ -1,0 +1,272 @@
+/* FloatingTimerWidget -- Living Minimal dark draggable timer */
+
+.widget {
+  position: fixed;
+  z-index: var(--z-modal);
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: 32px 28px 28px;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+
+  /* Entry animation: start hidden */
+  opacity: 0;
+  transform: scale(0.95);
+  transition:
+    opacity 400ms ease-out,
+    transform 400ms ease-out,
+    box-shadow var(--transition-fast);
+}
+
+/* Applied via JS on mount for entry animation */
+.entered {
+  opacity: 1;
+  transform: scale(1.0);
+}
+
+.widget.dragging {
+  cursor: grabbing;
+  box-shadow:
+    0 32px 100px rgba(0, 0, 0, 0.5),
+    0 12px 32px rgba(0, 0, 0, 0.3);
+  transform: scale(1.01);
+  transition: none;
+}
+
+/* ---- Close button (top-left) ---- */
+.closeButton {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-tertiary);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.closeButton:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.closeButton:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ---- Menu button top-right ---- */
+.menuAnchor {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+}
+
+.menuButton {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-tertiary);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.menuButton:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.menuButton:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ---- Slide menu ---- */
+.menu {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  width: 180px;
+  padding: var(--spacing-2) 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translateY(-8px) scale(0.96);
+  transform-origin: top right;
+  pointer-events: none;
+  transition:
+    opacity 0.2s cubic-bezier(0.2, 0, 0, 1),
+    transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.menuVisible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  text-align: left;
+}
+
+.menuItem:hover {
+  background: var(--color-surface-hover);
+}
+
+.menuItem:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: -2px;
+}
+
+.menuItem:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.menuItemDanger {
+  color: var(--color-error);
+}
+
+.menuIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* ---- Topic name ---- */
+.topicName {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  text-align: center;
+  line-height: var(--line-height-tight);
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* ---- Timer display ---- */
+.time {
+  font-family: var(--font-family-mono);
+  font-size: 72px;
+  font-weight: 200;
+  color: var(--color-text-primary);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-align: center;
+}
+
+/* ---- Progress dots ---- */
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 14px;
+}
+
+.dot {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  transition:
+    background-color var(--transition-normal),
+    transform var(--transition-normal);
+}
+
+.dotIdle {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dotDone {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dotActive {
+  background: var(--glow-color);
+  transform: scale(1.15);
+}
+
+/* ---- Play / Pause button area ---- */
+.playArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--spacing-1);
+}
+
+.playButton {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--glow-color) 15%, transparent);
+  color: var(--color-text-tertiary);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+  .widget {
+    width: 280px;
+    padding: 28px 20px 24px;
+    gap: var(--spacing-2);
+  }
+
+  .time {
+    font-size: 56px;
+  }
+
+  .menu {
+    width: 160px;
+  }
+}

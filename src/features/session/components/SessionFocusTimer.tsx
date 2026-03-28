@@ -12,8 +12,7 @@ interface SessionFocusTimerProps {
   isBusy?: boolean;
 }
 
-const RADIUS = 90;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+const SEGMENT_COUNT = 4;
 
 export function SessionFocusTimer({
   phaseType,
@@ -24,57 +23,79 @@ export function SessionFocusTimer({
   onInterrupt,
   isBusy = false,
 }: SessionFocusTimerProps) {
-  const dashOffset = CIRCUMFERENCE - (progressPercent / 100) * CIRCUMFERENCE;
   const statusText = getSessionStatusText(phaseType, remainingSec);
+  const clampedProgress = Math.max(0, Math.min(progressPercent, 100));
+  const completedSegments = Math.min(
+    SEGMENT_COUNT,
+    Math.floor(clampedProgress / (100 / SEGMENT_COUNT)),
+  );
+  const activeSegment = clampedProgress >= 100
+    ? -1
+    : Math.min(SEGMENT_COUNT - 1, Math.floor(clampedProgress / (100 / SEGMENT_COUNT)));
+  const remainingLabel = remainingSec > 0
+    ? `${Math.ceil(remainingSec / 60)}분 남음`
+    : '완료 준비됨';
+  const phaseLabel = phaseType === 'study' ? '학습 집중' : '휴식 중';
+  const topicLabel = topicName || (phaseType === 'study' ? '현재 집중' : '짧은 휴식');
 
   return (
     <div className={styles.timerContainer}>
-      <div className={styles.progressRing}>
-        <svg
-          className={styles.progressSvg}
-          width="220"
-          height="220"
-          viewBox="0 0 220 220"
-          aria-hidden="true"
-        >
-          <circle className={styles.progressTrack} cx="110" cy="110" r={RADIUS} />
-          <circle
-            className={styles.progressFill}
-            cx="110"
-            cy="110"
-            r={RADIUS}
-            strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={dashOffset}
-          />
-        </svg>
+      <section className={styles.timerCard} aria-label="집중 타이머">
+        <div className={styles.timerHeader}>
+          <span className={styles.phaseLabel}>{phaseLabel}</span>
+          <p className={styles.topicName} title={topicLabel}>
+            {topicLabel}
+          </p>
+        </div>
 
         <div className={styles.timeDisplay}>
-          <span
-            className={styles.time}
-            role="timer"
-            aria-live="polite"
-            aria-label={`남은 시간 ${formattedTime}`}
-          >
-            {formattedTime}
-          </span>
-          <span className={styles.topicName} title={topicName}>
-            {topicName}
-          </span>
+          <div className={styles.breathingWrapper}>
+            <span
+              className={styles.timerText}
+              role="timer"
+              aria-live="polite"
+              aria-label={`남은 시간 ${formattedTime}`}
+            >
+              {formattedTime}
+            </span>
+          </div>
+          <p className={styles.statusText} aria-live="polite">
+            {statusText}
+          </p>
         </div>
-      </div>
 
-      <p className={styles.statusText} aria-live="polite">
-        {statusText}
-      </p>
+        <div className={styles.segmentRail} aria-hidden="true">
+          {Array.from({ length: SEGMENT_COUNT }, (_, index) => {
+            const stateClass = index < completedSegments
+              ? styles.segmentDone
+              : index === activeSegment
+                ? styles.segmentActive
+                : styles.segmentIdle;
 
-      <button
-        className={styles.interruptButton}
-        onClick={onInterrupt}
-        type="button"
-        disabled={isBusy}
-      >
-        중단
-      </button>
+            return (
+              <span
+                key={index}
+                className={`${styles.segment} ${stateClass}`}
+              />
+            );
+          })}
+        </div>
+
+        <div className={styles.metaRow}>
+          <span className={styles.metaText}>{remainingLabel}</span>
+          <span className={styles.metaDivider} aria-hidden="true" />
+          <span className={styles.metaText}>{Math.round(clampedProgress)}% 완료</span>
+        </div>
+
+        <button
+          className={styles.interruptButton}
+          onClick={onInterrupt}
+          type="button"
+          disabled={isBusy}
+        >
+          세션 종료
+        </button>
+      </section>
     </div>
   );
 }

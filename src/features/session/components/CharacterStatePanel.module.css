@@ -1,4 +1,4 @@
-/* CharacterStatePanel — 캐릭터 상태 표시 */
+/* CharacterStatePanel -- Living Minimal dark */
 
 .panel {
   display: flex;
@@ -11,6 +11,7 @@
 .characterImage {
   width: 80px;
   height: 80px;
+  opacity: 0.85;
 }
 
 .message {
@@ -20,7 +21,6 @@
   text-align: center;
 }
 
-/* 반응형: Compact */
 @media (max-width: 799px) {
   .characterImage {
     width: 60px;

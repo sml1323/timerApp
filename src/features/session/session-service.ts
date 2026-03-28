@@ -71,10 +71,9 @@ export async function completeActiveSession(sessionId: string): Promise<Result<S
     useSessionStore.getState().endSession(result.data);
 
     if (result.data.phaseType === 'study') {
-      // 알림은 보조 기능 — fire-and-forget
       const topicName = useSessionStore.getState().selectedTopicName ?? '';
       const durationMin = Math.round(result.data.plannedDurationSec / 60);
-      sendSessionNotification('세션 완료', `${topicName} — ${durationMin}분 학습 완료`);
+      sendSessionNotification('Session complete', `${topicName} - ${durationMin} min study complete`);
     }
   }
 

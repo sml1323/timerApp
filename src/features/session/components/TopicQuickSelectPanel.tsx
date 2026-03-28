@@ -69,7 +69,7 @@ export function TopicQuickSelectPanel({
   if (isLoading) {
     return (
       <div className={styles.panel} aria-busy="true">
-        <p className={styles.loadingText}>주제 불러오는 중…</p>
+        <p className={styles.loadingText}>주제 불러오는 중...</p>
       </div>
     );
   }
@@ -86,10 +86,10 @@ export function TopicQuickSelectPanel({
     return (
       <div className={styles.emptyState}>
         <img src={defaultCharacter} alt="" className={styles.characterImage} />
-        <p className={styles.emptyMessage}>아직 학습 주제가 없습니다</p>
-        <p className={styles.emptyHint}>주제를 만들면 바로 학습을 시작할 수 있어요</p>
+        <p className={styles.emptyMessage}>아직 학습 주제가 없습니다.</p>
+        <p className={styles.emptyHint}>주제를 만들고 바로 학습을 시작해 보세요.</p>
         <Link to="/topics" className={styles.emptyAction}>
-          주제 관리로 이동
+          주제 관리 열기
         </Link>
       </div>
     );

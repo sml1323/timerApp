@@ -4,16 +4,16 @@ import type { SessionPhaseType } from '../../domain/sessions/session';
 import { useSessionStore } from './state/sessionStore';
 import { useSessionPhase, useActiveSession, useSelectedTopic, useCompletedSession } from './state/sessionSelectors';
 import { useSessionClock } from './hooks/useSessionClock';
-import { SessionFocusTimer } from './components/SessionFocusTimer';
-import { CharacterStatePanel } from './components/CharacterStatePanel';
+import { FloatingTimerWidget } from './components/FloatingTimerWidget';
 import { SessionOutcomePanel } from './components/SessionOutcomePanel';
-import { getOutcomeContent, getInterruptedOutcomeContent, getPhaseStartErrorMessage, getSessionStatusText } from './session-flow';
+import { getOutcomeContent, getInterruptedOutcomeContent, getPhaseStartErrorMessage } from './session-flow';
 import {
   beginBreakSession,
   beginStudySession,
   completeActiveSession,
   interruptActiveSession,
 } from './session-service';
+import { syncTraySessionTimerText } from '../../platform/tauri/tray-client';
 import { Button } from '../../shared/ui/Button/Button';
 import styles from './SessionPage.module.css';
 
@@ -47,7 +47,7 @@ export function SessionPage() {
         setActionError(result.message);
       }
     } catch {
-      setActionError('세션 완료 저장 중 예상치 못한 오류가 발생했습니다.');
+      setActionError('세션 저장 중 예기치 않은 오류가 발생했습니다.');
     } finally {
       setIsSaving(false);
     }
@@ -64,7 +64,7 @@ export function SessionPage() {
         setActionError(result.message);
       }
     } catch {
-      setActionError('세션 중단 처리 중 예상치 못한 오류가 발생했습니다.');
+      setActionError('세션 종료 중 예기치 않은 오류가 발생했습니다.');
     } finally {
       setIsSaving(false);
     }
@@ -73,7 +73,7 @@ export function SessionPage() {
   const transitionToPhase = useCallback(async (nextPhaseType: SessionPhaseType) => {
     const topicId = selectedTopicId ?? completedSession?.topicId ?? activeSession?.topicId;
     if (!topicId) {
-      setActionError('다음 세션을 시작할 주제가 없습니다.');
+      setActionError('다음 세션에 사용할 주제가 없습니다.');
       return;
     }
 
@@ -124,6 +124,14 @@ export function SessionPage() {
     isRunning: sessionPhase === 'running',
     onComplete: handleComplete,
   });
+
+  useEffect(() => {
+    void syncTraySessionTimerText(sessionPhase === 'running' ? clock.formattedTime : null);
+  }, [clock.formattedTime, sessionPhase]);
+
+  useEffect(() => () => {
+    void syncTraySessionTimerText(null);
+  }, []);
 
   // 세션이 없으면 아무것도 렌더링하지 않음 (리다이렉트 대기)
   if (!activeSession && sessionPhase === 'idle') {
@@ -184,7 +192,7 @@ export function SessionPage() {
           variant="recovery"
           topicName={selectedTopicName ?? ''}
           durationSec={interruptedDurationSec}
-          durationLabel="진행 중단"
+          durationLabel="interrupted"
           feedbackMessage={interruptedContent.feedbackMessage}
           primaryActionLabel={interruptedContent.primaryActionLabel}
           onPrimaryAction={handleStartNextStudy}
@@ -203,36 +211,37 @@ export function SessionPage() {
     );
   }
 
-  // 세션 진행 중
+  // 세션 진행 중 — 플로팅 위젯
   return (
-    <div className={styles.page}>
-      <SessionFocusTimer
+    <>
+      <FloatingTimerWidget
         phaseType={activeSession?.phaseType ?? 'study'}
         formattedTime={clock.formattedTime}
         progressPercent={clock.progressPercent}
         topicName={selectedTopicName ?? ''}
-        remainingSec={clock.remainingSec}
+        isRunning={sessionPhase === 'running'}
         onInterrupt={handleInterrupt}
+        onViewStats={handleViewStats}
+        onGoHome={handleGoHome}
+        onClose={handleGoHome}
         isBusy={isSaving}
       />
-      <CharacterStatePanel
-        state="loading"
-        message={getSessionStatusText(activeSession?.phaseType ?? 'study', clock.remainingSec)}
-      />
       {actionError && (
-        <p className={styles.actionError} role="alert">
-          {actionError}
-        </p>
+        <div className={styles.page}>
+          <p className={styles.actionError} role="alert">
+            {actionError}
+          </p>
+          {clock.remainingSec === 0 && sessionPhase === 'running' && (
+            <Button
+              variant="secondary"
+              onClick={handleComplete}
+              disabled={isSaving}
+            >
+              저장 재시도
+            </Button>
+          )}
+        </div>
       )}
-      {clock.remainingSec === 0 && sessionPhase === 'running' && actionError && (
-        <Button
-          variant="secondary"
-          onClick={handleComplete}
-          disabled={isSaving}
-        >
-          완료 저장 다시 시도
-        </Button>
-      )}
-    </div>
+    </>
   );
 }

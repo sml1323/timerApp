@@ -65,7 +65,7 @@ export function useSessionClock(options: UseSessionClockOptions): SessionClockRe
         completedRef.current = true;
         onCompleteRef.current?.();
       }
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(intervalId);
   }, [startedAtMs, plannedDurationSec, isRunning]);

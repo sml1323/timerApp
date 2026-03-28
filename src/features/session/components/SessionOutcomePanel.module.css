@@ -1,4 +1,4 @@
-/* SessionOutcomePanel — 세션 완료 결과 패널 */
+/* SessionOutcomePanel -- Living Minimal dark */
 
 .panel {
   display: flex;
@@ -29,7 +29,7 @@
   margin: 0;
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
+  color: var(--glow-color);
 }
 
 .actions {
@@ -51,9 +51,8 @@
   }
 }
 
-/* Recovery variant 스타일 분기 */
+/* Recovery variant */
 .recoveryPanel {
-  /* recovery 패널 — 필요 시 배경/보더 분기 추가 */
   opacity: 1;
 }
 
