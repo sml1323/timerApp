@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router';
 import type { DashboardData } from '../dashboard-service';
 import styles from './StudyStatusSummaryCard.module.css';
 
@@ -30,10 +29,8 @@ function getProgressLabel(state: 'default' | 'nearing' | 'achieved'): string {
 }
 
 export function StudyStatusSummaryCard({ data, isLoading, error }: StudyStatusSummaryCardProps) {
-  const navigate = useNavigate();
-
   const handleCardClick = () => {
-    navigate('/stats');
+    // No-op: navigation removed in Flow-Minimal rewrite
   };
 
   if (error) {

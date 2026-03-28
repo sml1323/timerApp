@@ -164,3 +164,50 @@ test('startSession does not change lastCompletedAtMs', () => {
   assert.equal(stateAfterStart.lastCompletedAtMs, savedTimestamp, 'lastCompletedAtMs should not change on startSession');
 });
 
+// --- clearSession() regression tests ---
+
+test('clearSession preserves selectedTopicId and selectedTopicName', () => {
+  const store = useSessionStore.getState();
+  store.setSelectedTopic('topic-1', '자료구조');
+  store.startSession(runningStudySession);
+
+  store.clearSession();
+
+  const state = useSessionStore.getState();
+  assert.equal(state.activeSession, null, 'activeSession should be null');
+  assert.equal(state.sessionPhase, 'idle', 'sessionPhase should be idle');
+  assert.equal(state.completedSession, null, 'completedSession should be null');
+  assert.equal(state.selectedTopicId, 'topic-1', 'selectedTopicId should be preserved');
+  assert.equal(state.selectedTopicName, '자료구조', 'selectedTopicName should be preserved');
+});
+
+test('clearSession clears session data but keeps lastCompletedAtMs', () => {
+  const store = useSessionStore.getState();
+  store.startSession(runningStudySession);
+  store.endSession(completedStudySession);
+
+  const savedTs = useSessionStore.getState().lastCompletedAtMs;
+
+  store.clearSession();
+
+  const state = useSessionStore.getState();
+  assert.equal(state.activeSession, null, 'activeSession should be null');
+  assert.equal(state.sessionPhase, 'idle', 'sessionPhase should be idle');
+  assert.equal(state.lastCompletedAtMs, savedTs, 'lastCompletedAtMs should be preserved');
+});
+
+test('reset still clears everything including topic selection', () => {
+  const store = useSessionStore.getState();
+  store.setSelectedTopic('topic-1', '자료구조');
+  store.startSession(runningStudySession);
+
+  store.reset();
+
+  const state = useSessionStore.getState();
+  assert.equal(state.activeSession, null);
+  assert.equal(state.sessionPhase, 'idle');
+  assert.equal(state.selectedTopicId, null, 'reset should clear selectedTopicId');
+  assert.equal(state.selectedTopicName, null, 'reset should clear selectedTopicName');
+  assert.equal(state.completedSession, null);
+});
+

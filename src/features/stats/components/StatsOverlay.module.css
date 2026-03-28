@@ -1,0 +1,19 @@
+.error, .empty { font-size: var(--font-size-sm); color: var(--color-text-tertiary); text-align: center; margin: var(--spacing-4) 0; }
+.loading { font-size: var(--font-size-sm); color: var(--color-text-tertiary); text-align: center; }
+
+.weekNav { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-3); }
+.navBtn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; color: var(--color-text-secondary); font-size: 18px; cursor: pointer; border-radius: var(--radius-full); }
+.navBtn:hover { background: var(--color-surface-hover); }
+.navBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+.weekLabel { font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); }
+
+.chart { display: flex; gap: 4px; height: 100px; margin-bottom: var(--spacing-4); }
+.col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.barTrack { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.bar { width: 100%; background: rgba(255,255,255,0.15); border-radius: 3px 3px 0 0; min-height: 2px; transition: height var(--transition-normal); }
+.dayLabel { font-size: 10px; color: var(--color-text-tertiary); }
+
+.summaryRow { display: flex; gap: var(--spacing-2); margin-bottom: var(--spacing-4); }
+.stat { flex: 1; text-align: center; padding: var(--spacing-2); background: var(--color-surface); border-radius: var(--radius-sm); }
+.statLabel { font-size: 10px; color: var(--color-text-tertiary); display: block; }
+.statValue { font-size: var(--font-size-base); color: var(--color-text-primary); }

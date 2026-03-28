@@ -16,6 +16,7 @@ interface SessionState {
   endSession: (session: Session) => void;
   interruptCurrentSession: (session: Session) => void;
   setSelectedTopic: (id: string | null, name: string | null) => void;
+  clearSession: () => void;
   reset: () => void;
 }
 
@@ -51,6 +52,16 @@ export const useSessionStore = create<SessionState>((set) => ({
 
   setSelectedTopic: (id: string | null, name: string | null) =>
     set({ selectedTopicId: id, selectedTopicName: name }),
+
+  clearSession: () =>
+    set((state) => ({
+      activeSession: null,
+      sessionPhase: 'idle' as SessionPhase,
+      completedSession: null,
+      selectedTopicId: state.selectedTopicId,
+      selectedTopicName: state.selectedTopicName,
+      lastCompletedAtMs: state.lastCompletedAtMs,
+    })),
 
   reset: () =>
     set({

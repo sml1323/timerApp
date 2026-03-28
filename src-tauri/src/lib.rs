@@ -34,6 +34,26 @@ fn show_window<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
     window.set_focus()
 }
 
+fn show_window_at_tray<R: Runtime>(
+    app: &AppHandle<R>,
+    position: tauri::PhysicalPosition<f64>,
+) -> tauri::Result<()> {
+    let Some(window) = app.get_webview_window(MAIN_WINDOW_LABEL) else {
+        return Ok(());
+    };
+    let scale = window.scale_factor().unwrap_or(1.0);
+    let win_size = window.outer_size().unwrap_or(tauri::PhysicalSize {
+        width: 320,
+        height: 420,
+    });
+    let x = (position.x / scale) - (win_size.width as f64 / scale / 2.0);
+    let y = position.y / scale;
+    let _ = window.set_position(tauri::LogicalPosition::new(x.max(0.0), y.max(0.0)));
+    let _ = window.unminimize();
+    window.show()?;
+    window.set_focus()
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let migrations = vec![
@@ -92,10 +112,11 @@ pub fn run() {
                         if let tauri::tray::TrayIconEvent::Click {
                             button: tauri::tray::MouseButton::Left,
                             button_state: tauri::tray::MouseButtonState::Up,
+                            position,
                             ..
                         } = event
                         {
-                            let _ = show_window(tray.app_handle());
+                            let _ = show_window_at_tray(tray.app_handle(), position);
                         }
                     });
 

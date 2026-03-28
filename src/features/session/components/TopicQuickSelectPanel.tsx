@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { Link } from 'react-router';
 import type { Topic } from '../../../domain/topics/topic';
 import type { GoalProgress } from '../../goals/goal-service';
 import { GoalProgressInline } from '../../goals/components/GoalProgressInline';
@@ -88,9 +87,9 @@ export function TopicQuickSelectPanel({
         <img src={defaultCharacter} alt="" className={styles.characterImage} />
         <p className={styles.emptyMessage}>아직 학습 주제가 없습니다.</p>
         <p className={styles.emptyHint}>주제를 만들고 바로 학습을 시작해 보세요.</p>
-        <Link to="/topics" className={styles.emptyAction}>
-          주제 관리 열기
-        </Link>
+        <span className={styles.emptyAction}>
+          주제 관리에서 추가하세요
+        </span>
       </div>
     );
   }

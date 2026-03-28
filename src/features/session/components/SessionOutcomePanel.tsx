@@ -1,5 +1,6 @@
-import { CharacterStatePanel } from './CharacterStatePanel';
 import { Button } from '../../../shared/ui/Button/Button';
+import speakCharacter from '../../../assets/characters/speak.svg';
+import defaultCharacter from '../../../assets/characters/default.svg';
 import styles from './SessionOutcomePanel.module.css';
 
 interface SessionOutcomePanelProps {
@@ -44,7 +45,13 @@ export function SessionOutcomePanel({
 
   return (
     <div className={`${styles.panel} ${isRecovery ? styles.recoveryPanel : ''}`} role="status" aria-live="polite">
-      <CharacterStatePanel state="speak" message={feedbackMessage} />
+      <img
+        src={isRecovery ? defaultCharacter : speakCharacter}
+        alt=""
+        className={styles.character}
+        aria-hidden="true"
+      />
+      <p className={styles.feedbackMessage}>{feedbackMessage}</p>
 
       <div className={styles.summary}>
         <p className={styles.topicName}>{topicName}</p>

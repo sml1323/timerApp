@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider } from "react-router";
-import { router } from "./app/router";
+import { TimerApp } from "./app/TimerApp";
 import { isTauriRuntime } from "./platform/runtime/runtime-detect";
 import { recoverAbandonedSessions } from "./platform/browser/session-adapter";
 import "./shared/styles/globals.css";
@@ -115,7 +114,7 @@ function App() {
     );
   }
 
-  return <RouterProvider router={router} />;
+  return <TimerApp />;
 }
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

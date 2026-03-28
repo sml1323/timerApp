@@ -14,11 +14,9 @@
       {
         "label": "main",
         "title": "tauri-app",
-        "width": 360,
-        "height": 480,
-        "minWidth": 280,
-        "minHeight": 400,
-        "resizable": true,
+        "width": 320,
+        "height": 420,
+        "resizable": false,
         "maximizable": false,
         "minimizable": true,
         "closable": true,
@@ -29,12 +27,13 @@
         "visibleOnAllWorkspaces": true,
         "skipTaskbar": false,
         "acceptFirstMouse": true,
-        "shadow": true
+        "shadow": false
       }
     ],
     "security": {
       "csp": null
-    }
+    },
+    "macOSPrivateApi": true
   },
   "plugins": {
     "sql": {

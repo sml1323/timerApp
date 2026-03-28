@@ -7,36 +7,36 @@
      1. 색상 토큰 — Dark Palette
      ---------------------------------------- */
 
-  /* --- Background --- */
-  --color-bg: #0a0a0c;
-  --color-surface: #0d0d10;
-  --color-surface-hover: rgba(255, 255, 255, 0.06);
-  --color-surface-active: rgba(255, 255, 255, 0.08);
+  /* --- Background (Tokyo Night) --- */
+  --color-bg: #1a1b26;
+  --color-surface: #1f2335;
+  --color-surface-hover: rgba(122, 162, 247, 0.08);
+  --color-surface-active: rgba(122, 162, 247, 0.12);
 
   /* --- Border --- */
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-strong: rgba(255, 255, 255, 0.1);
+  --color-border: rgba(122, 162, 247, 0.1);
+  --color-border-strong: rgba(122, 162, 247, 0.18);
 
   /* --- Text --- */
-  --color-text-primary: rgba(255, 255, 255, 0.85);
-  --color-text-secondary: rgba(255, 255, 255, 0.5);
-  --color-text-tertiary: rgba(255, 255, 255, 0.25);
-  --color-text-disabled: rgba(255, 255, 255, 0.12);
+  --color-text-primary: #c0caf5;
+  --color-text-secondary: #a9b1d6;
+  --color-text-tertiary: #565f89;
+  --color-text-disabled: #3b4261;
 
   /* --- Status Colors --- */
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-error-surface: rgba(239, 68, 68, 0.08);
-  --color-error-text: rgba(239, 68, 68, 0.9);
-  --color-destructive: #ef4444;
+  --color-success: #9ece6a;
+  --color-warning: #e0af68;
+  --color-error: #f7768e;
+  --color-error-surface: rgba(247, 118, 142, 0.08);
+  --color-error-text: rgba(247, 118, 142, 0.9);
+  --color-destructive: #f7768e;
 
-  /* --- Glow Colors (per posture state) --- */
-  --glow-idle: #3b82f6;
-  --glow-focus: #6366f1;
-  --glow-break: #f59e0b;
-  --glow-complete: #22c55e;
-  --glow-interrupted: #ef4444;
+  /* --- Glow Colors (per posture state, Tokyo Night) --- */
+  --glow-idle: #7aa2f7;
+  --glow-focus: #bb9af7;
+  --glow-break: #e0af68;
+  --glow-complete: #9ece6a;
+  --glow-interrupted: #f7768e;
 
   /* --- Active glow (set by data-posture) --- */
   --glow-color: var(--glow-idle);
