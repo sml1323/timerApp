@@ -192,7 +192,7 @@ export function SessionPage() {
           variant="recovery"
           topicName={selectedTopicName ?? ''}
           durationSec={interruptedDurationSec}
-          durationLabel="interrupted"
+          durationLabel="학습 중단"
           feedbackMessage={interruptedContent.feedbackMessage}
           primaryActionLabel={interruptedContent.primaryActionLabel}
           onPrimaryAction={handleStartNextStudy}

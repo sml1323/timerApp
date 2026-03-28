@@ -9,6 +9,10 @@ export function AppShell() {
   const activeSession = useSessionStore((s) => s.activeSession);
 
   const phaseType = activeSession?.phaseType ?? null;
+  // isRunning must reflect whether the timer is actually ticking,
+  // not just whether the session phase is 'running'.
+  // For now, running phase always means ticking (no pause feature yet).
+  // When pause is added, this should read from a dedicated store field.
   const isRunning = sessionPhase === 'running';
   const posture = derivePosture(sessionPhase, phaseType, isRunning);
 
