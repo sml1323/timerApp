@@ -26,14 +26,14 @@ export async function createSession(input: CreateSessionInput): Promise<Result<S
     const parsed = CreateSessionSchema.safeParse(input);
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? '입력값이 올바르지 않습니다');
+      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? 'Invalid input');
     }
     const { topicId, phaseType, plannedDurationSec } = parsed.data;
 
     // 2. topicId 존재 확인
     const topicRows = await select<{ id: string }>('SELECT id FROM topics WHERE id = $1', [topicId]);
     if (topicRows.length === 0) {
-      return err(ERROR_CODES.NOT_FOUND, '주제를 찾을 수 없습니다');
+      return err(ERROR_CODES.NOT_FOUND, 'Topic not found');
     }
 
     // 3. 현재 running 세션 존재 확인
@@ -41,7 +41,7 @@ export async function createSession(input: CreateSessionInput): Promise<Result<S
       "SELECT id FROM sessions WHERE status = 'running' LIMIT 1",
     );
     if (runningRows.length > 0) {
-      return err(ERROR_CODES.SESSION_STATE_CONFLICT, '이미 진행 중인 세션이 있습니다');
+      return err(ERROR_CODES.SESSION_STATE_CONFLICT, 'A session is already running');
     }
 
     // 4. ID 및 타임스탬프 생성
@@ -56,7 +56,7 @@ export async function createSession(input: CreateSessionInput): Promise<Result<S
       );
     } catch (error) {
       if (isSingleRunningSessionConstraintError(error)) {
-        return err(ERROR_CODES.SESSION_STATE_CONFLICT, '이미 진행 중인 세션이 있습니다');
+        return err(ERROR_CODES.SESSION_STATE_CONFLICT, 'A session is already running');
       }
       throw error;
     }
@@ -64,14 +64,14 @@ export async function createSession(input: CreateSessionInput): Promise<Result<S
     // 6. 삽입된 row 조회 후 반환
     const rows = await select<SessionRow>('SELECT * FROM sessions WHERE id = $1', [id]);
     if (rows.length === 0) {
-      return err(ERROR_CODES.PERSISTENCE_ERROR, '세션 생성 후 조회에 실패했습니다');
+      return err(ERROR_CODES.PERSISTENCE_ERROR, 'Failed to load the session after creation');
     }
 
     return ok(toSession(rows[0]));
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `세션 생성 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while creating the session: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -83,13 +83,13 @@ export async function findSessionById(id: string): Promise<Result<Session>> {
   try {
     const rows = await select<SessionRow>('SELECT * FROM sessions WHERE id = $1', [id]);
     if (rows.length === 0) {
-      return err(ERROR_CODES.NOT_FOUND, '세션을 찾을 수 없습니다');
+      return err(ERROR_CODES.NOT_FOUND, 'Session not found');
     }
     return ok(toSession(rows[0]));
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `세션 조회 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while loading the session: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -104,7 +104,7 @@ export async function completeSession(input: CompleteSessionInput): Promise<Resu
     const parsed = CompleteSessionSchema.safeParse(input);
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? '입력값이 올바르지 않습니다');
+      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? 'Invalid input');
     }
     const { sessionId } = parsed.data;
 
@@ -125,20 +125,20 @@ export async function completeSession(input: CompleteSessionInput): Promise<Resu
         return err(transitionResult.code, transitionResult.message);
       }
 
-      return err(ERROR_CODES.PERSISTENCE_ERROR, '세션 완료 업데이트가 적용되지 않았습니다');
+      return err(ERROR_CODES.PERSISTENCE_ERROR, 'The completed session update was not applied');
     }
 
     // 3. 갱신된 row 조회 후 반환
     const rows = await select<SessionRow>('SELECT * FROM sessions WHERE id = $1', [sessionId]);
     if (rows.length === 0) {
-      return err(ERROR_CODES.PERSISTENCE_ERROR, '세션 완료 후 조회에 실패했습니다');
+      return err(ERROR_CODES.PERSISTENCE_ERROR, 'Failed to load the session after completion');
     }
 
     return ok(toSession(rows[0]));
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `세션 완료 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while completing the session: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -153,7 +153,7 @@ export async function interruptSession(input: InterruptSessionInput): Promise<Re
     const parsed = InterruptSessionSchema.safeParse(input);
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? '입력값이 올바르지 않습니다');
+      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? 'Invalid input');
     }
     const { sessionId } = parsed.data;
 
@@ -174,20 +174,20 @@ export async function interruptSession(input: InterruptSessionInput): Promise<Re
         return err(transitionResult.code, transitionResult.message);
       }
 
-      return err(ERROR_CODES.PERSISTENCE_ERROR, '세션 중단 업데이트가 적용되지 않았습니다');
+      return err(ERROR_CODES.PERSISTENCE_ERROR, 'The interrupted session update was not applied');
     }
 
     // 3. 갱신된 row 조회 후 반환
     const rows = await select<SessionRow>('SELECT * FROM sessions WHERE id = $1', [sessionId]);
     if (rows.length === 0) {
-      return err(ERROR_CODES.PERSISTENCE_ERROR, '세션 중단 후 조회에 실패했습니다');
+      return err(ERROR_CODES.PERSISTENCE_ERROR, 'Failed to load the session after interruption');
     }
 
     return ok(toSession(rows[0]));
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `세션 중단 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while interrupting the session: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -208,7 +208,7 @@ export async function findSessionsByDateRange(startMs: number, endMs: number): P
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `세션 목록 조회 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while loading sessions: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -222,24 +222,24 @@ export async function reassignSessionTopic(input: ReassignSessionTopicInput): Pr
     const parsed = ReassignSessionTopicSchema.safeParse(input);
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? '입력값이 올바르지 않습니다');
+      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? 'Invalid input');
     }
     const { sessionId, newTopicId } = parsed.data;
 
     // 1. 세션 존재 + 상태 확인
     const sessionRows = await select<SessionRow>('SELECT * FROM sessions WHERE id = $1', [sessionId]);
     if (sessionRows.length === 0) {
-      return err(ERROR_CODES.NOT_FOUND, '세션을 찾을 수 없습니다');
+      return err(ERROR_CODES.NOT_FOUND, 'Session not found');
     }
     const session = toSession(sessionRows[0]);
     if (session.status !== 'completed' && session.status !== 'interrupted') {
-      return err(ERROR_CODES.SESSION_STATE_CONFLICT, '완료되거나 중단된 세션만 주제를 변경할 수 있습니다');
+      return err(ERROR_CODES.SESSION_STATE_CONFLICT, 'Only completed or interrupted sessions can change topics');
     }
 
     // 2. 새 topicId 존재 확인
     const topicRows = await select<{ id: string }>('SELECT id FROM topics WHERE id = $1', [newTopicId]);
     if (topicRows.length === 0) {
-      return err(ERROR_CODES.NOT_FOUND, '주제를 찾을 수 없습니다');
+      return err(ERROR_CODES.NOT_FOUND, 'Topic not found');
     }
 
     // 3. UPDATE topic_id
@@ -252,13 +252,13 @@ export async function reassignSessionTopic(input: ReassignSessionTopicInput): Pr
     // 4. 갱신된 row 반환
     const rows = await select<SessionRow>('SELECT * FROM sessions WHERE id = $1', [sessionId]);
     if (rows.length === 0) {
-      return err(ERROR_CODES.PERSISTENCE_ERROR, '세션 갱신 후 조회에 실패했습니다');
+      return err(ERROR_CODES.PERSISTENCE_ERROR, 'Failed to load the session after updating it');
     }
     return ok(toSession(rows[0]));
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `세션 주제 변경 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while changing the session topic: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -278,7 +278,7 @@ export async function recoverAbandonedSessions(): Promise<Result<number>> {
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `방치 세션 복구 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while recovering abandoned sessions: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }

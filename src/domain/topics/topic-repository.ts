@@ -15,7 +15,7 @@ export async function createTopic(input: CreateTopicInput): Promise<Result<Topic
     const parsed = CreateTopicSchema.safeParse(input);
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? '입력값이 올바르지 않습니다');
+      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? 'Invalid input');
     }
     const { name } = parsed.data;
 
@@ -25,7 +25,7 @@ export async function createTopic(input: CreateTopicInput): Promise<Result<Topic
       [name],
     );
     if (duplicates.length > 0) {
-      return err(ERROR_CODES.VALIDATION_ERROR, '이미 존재하는 주제 이름입니다');
+      return err(ERROR_CODES.VALIDATION_ERROR, 'A topic with this name already exists');
     }
 
     // 3. ID 및 타임스탬프 생성
@@ -41,14 +41,14 @@ export async function createTopic(input: CreateTopicInput): Promise<Result<Topic
     // 5. 삽입된 row 조회 후 반환
     const rows = await select<TopicRow>('SELECT * FROM topics WHERE id = $1', [id]);
     if (rows.length === 0) {
-      return err(ERROR_CODES.PERSISTENCE_ERROR, '주제 생성 후 조회에 실패했습니다');
+      return err(ERROR_CODES.PERSISTENCE_ERROR, 'Failed to load the topic after creation');
     }
 
     return ok(toTopic(rows[0]));
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `주제 생성 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while creating the topic: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -69,7 +69,7 @@ export async function findAllTopics(includeArchived: boolean = false): Promise<R
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `주제 목록 조회 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while loading topics: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -81,13 +81,13 @@ export async function findTopicById(id: string): Promise<Result<Topic>> {
   try {
     const rows = await select<TopicRow>('SELECT * FROM topics WHERE id = $1', [id]);
     if (rows.length === 0) {
-      return err(ERROR_CODES.NOT_FOUND, '주제를 찾을 수 없습니다');
+      return err(ERROR_CODES.NOT_FOUND, 'Topic not found');
     }
     return ok(toTopic(rows[0]));
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `주제 조회 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while loading the topic: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -102,7 +102,7 @@ export async function updateTopic(id: string, input: UpdateTopicInput): Promise<
     const parsed = UpdateTopicSchema.safeParse(input);
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? '입력값이 올바르지 않습니다');
+      return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? 'Invalid input');
     }
     const { name } = parsed.data;
 
@@ -118,7 +118,7 @@ export async function updateTopic(id: string, input: UpdateTopicInput): Promise<
       [name, id],
     );
     if (duplicates.length > 0) {
-      return err(ERROR_CODES.VALIDATION_ERROR, '이미 존재하는 주제 이름입니다');
+      return err(ERROR_CODES.VALIDATION_ERROR, 'A topic with this name already exists');
     }
 
     // 4. UPDATE
@@ -131,14 +131,14 @@ export async function updateTopic(id: string, input: UpdateTopicInput): Promise<
     // 5. 갱신된 row 조회 후 반환
     const rows = await select<TopicRow>('SELECT * FROM topics WHERE id = $1', [id]);
     if (rows.length === 0) {
-      return err(ERROR_CODES.PERSISTENCE_ERROR, '주제 수정 후 조회에 실패했습니다');
+      return err(ERROR_CODES.PERSISTENCE_ERROR, 'Failed to load the topic after updating it');
     }
 
     return ok(toTopic(rows[0]));
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `주제 수정 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while updating the topic: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -156,7 +156,7 @@ export async function archiveTopic(id: string): Promise<Result<Topic>> {
 
     // 2. 이미 아카이브 여부 확인
     if (existResult.data.isArchived) {
-      return err(ERROR_CODES.VALIDATION_ERROR, '이미 아카이브된 주제입니다');
+      return err(ERROR_CODES.VALIDATION_ERROR, 'This topic is already archived');
     }
 
     // 3. UPDATE
@@ -169,14 +169,14 @@ export async function archiveTopic(id: string): Promise<Result<Topic>> {
     // 4. 갱신된 row 조회 후 반환
     const rows = await select<TopicRow>('SELECT * FROM topics WHERE id = $1', [id]);
     if (rows.length === 0) {
-      return err(ERROR_CODES.PERSISTENCE_ERROR, '주제 아카이브 후 조회에 실패했습니다');
+      return err(ERROR_CODES.PERSISTENCE_ERROR, 'Failed to load the topic after archiving it');
     }
 
     return ok(toTopic(rows[0]));
   } catch (error) {
     return err(
       ERROR_CODES.PERSISTENCE_ERROR,
-      `주제 아카이브 중 오류가 발생했습니다: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while archiving the topic: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }

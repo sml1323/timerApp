@@ -28,7 +28,7 @@ async function initializeAppRuntime(): Promise<void> {
   }
 
   // production 브라우저 접근 — 에러 유도
-  throw new Error("이 앱은 데스크톱 환경에서만 실행할 수 있습니다.");
+  throw new Error("This app is available only in the desktop environment.");
 }
 
 /**
@@ -39,12 +39,12 @@ async function runSessionRecovery(): Promise<void> {
   try {
     const result = await recoverAbandonedSessions();
     if (result.ok && result.data > 0) {
-      console.info(`[Recovery] ${result.data}개의 방치된 세션을 interrupted로 복구했습니다.`);
+      console.info(`[Recovery] Recovered ${result.data} abandoned sessions to interrupted.`);
     } else if (!result.ok) {
-      console.warn(`[Recovery] 세션 복구 실패: ${result.message}`);
+      console.warn(`[Recovery] Session recovery failed: ${result.message}`);
     }
   } catch (error) {
-    console.warn('[Recovery] 세션 복구 중 예외 발생:', error);
+    console.warn('[Recovery] Unexpected error while recovering sessions:', error);
   }
 }
 
@@ -56,7 +56,7 @@ function App() {
     initializeAppRuntime()
       .then(() => setStatus("ready"))
       .catch((error) => {
-        console.error("앱 초기화 실패:", error);
+        console.error("App initialization failed:", error);
         setErrorMessage(
           error instanceof Error ? error.message : String(error)
         );
@@ -76,7 +76,7 @@ function App() {
           color: "var(--color-text-secondary, #888)",
         }}
       >
-        {isTauriRuntime() ? "데이터베이스 초기화 중…" : "QA 모드 초기화 중…"}
+        {isTauriRuntime() ? "Initializing database..." : "Initializing QA mode..."}
       </div>
     );
   }
@@ -97,15 +97,15 @@ function App() {
       >
         <h1 style={{ color: "var(--color-error, #e53e3e)", fontSize: "1.25rem" }}>
           {isTauriRuntime()
-            ? "데이터베이스 초기화에 실패했습니다"
-            : "앱 초기화에 실패했습니다"}
+            ? "Database initialization failed"
+            : "App initialization failed"}
         </h1>
         <p style={{ color: "var(--color-text-secondary, #888)", textAlign: "center" }}>
-          앱을 다시 시작해 주세요. 문제가 지속되면 앱 데이터를 삭제 후 재시도하세요.
+          Restart the app. If the problem continues, remove the app data and try again.
         </p>
         {errorMessage && (
           <details style={{ color: "var(--color-text-tertiary, #666)", fontSize: "0.875rem" }}>
-            <summary>기술 상세</summary>
+            <summary>Technical details</summary>
             <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-all" }}>
               {errorMessage}
             </pre>

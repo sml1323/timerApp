@@ -21,14 +21,14 @@ export async function createWeeklyGoal(input: CreateWeeklyGoalInput): Promise<Re
   const parsed = CreateWeeklyGoalSchema.safeParse(input);
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
-    return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? '입력값이 올바르지 않습니다');
+    return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? 'Invalid input');
   }
   const { topicId, weekStartAtMs, targetMinutes } = parsed.data;
 
   // 동일 topic + week 중복 확인
   const duplicate = store.find((g) => g.topicId === topicId && g.weekStartAtMs === weekStartAtMs);
   if (duplicate) {
-    return err(ERROR_CODES.VALIDATION_ERROR, '해당 주제에 이미 이번 주 목표가 설정되어 있습니다');
+    return err(ERROR_CODES.VALIDATION_ERROR, 'A weekly goal already exists for this topic');
   }
 
   const now = Date.now();
@@ -48,13 +48,13 @@ export async function updateWeeklyGoal(id: string, input: UpdateWeeklyGoalInput)
   const parsed = UpdateWeeklyGoalSchema.safeParse(input);
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
-    return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? '입력값이 올바르지 않습니다');
+    return err(ERROR_CODES.VALIDATION_ERROR, issue?.message ?? 'Invalid input');
   }
   const { targetMinutes } = parsed.data;
 
   const index = store.findIndex((g) => g.id === id);
   if (index === -1) {
-    return err(ERROR_CODES.NOT_FOUND, '주간 목표를 찾을 수 없습니다');
+    return err(ERROR_CODES.NOT_FOUND, 'Weekly goal not found');
   }
 
   const updated = { ...store[index], targetMinutes, updatedAtMs: Date.now() };

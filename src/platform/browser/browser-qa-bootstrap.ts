@@ -11,21 +11,21 @@ import type { Topic } from '../../domain/topics/topic';
 const SEED_TOPICS: Topic[] = [
   {
     id: 'qa-topic-1',
-    name: '수학',
+    name: 'Math',
     isArchived: false,
     createdAtMs: Date.now() - 86400000,
     updatedAtMs: Date.now() - 86400000,
   },
   {
     id: 'qa-topic-2',
-    name: '영어',
+    name: 'English',
     isArchived: false,
     createdAtMs: Date.now() - 72000000,
     updatedAtMs: Date.now() - 72000000,
   },
   {
     id: 'qa-topic-3',
-    name: '프로그래밍',
+    name: 'Programming',
     isArchived: false,
     createdAtMs: Date.now() - 43200000,
     updatedAtMs: Date.now() - 43200000,
@@ -41,6 +41,6 @@ export async function initializeBrowserQaRuntime(): Promise<void> {
   const seedIds = new Set(SEED_TOPICS.map((t) => t.id));
   setTopicExistsCheck((id: string) => seedIds.has(id));
 
-  console.info('[QA] 브라우저 QA 런타임 초기화 완료');
+  console.info('[QA] Browser QA runtime initialized');
   console.info(`[QA] Seed topics: ${SEED_TOPICS.map((t) => t.name).join(', ')}`);
 }

@@ -10,7 +10,7 @@ export async function sendSessionNotification(
   body: string,
 ): Promise<void> {
   if (!isTauriRuntime()) {
-    console.info('[QA] 알림 생략 (브라우저 환경):', title, body);
+    console.info('[QA] Notification skipped in browser environment:', title, body);
     return;
   }
 
@@ -30,7 +30,6 @@ export async function sendSessionNotification(
       sendNotification({ title, body });
     }
   } catch {
-    // 알림 실패는 무시 — 핵심 기능 차단 금지
-    console.warn('알림 발송 실패');
+    console.warn('Failed to send notification');
   }
 }

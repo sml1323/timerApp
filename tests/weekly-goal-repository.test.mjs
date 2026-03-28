@@ -93,7 +93,7 @@ test('createWeeklyGoal fails if duplicate exists', async () => {
   assert.equal(res.ok, false);
   if (!res.ok) {
     assert.equal(res.code, ERROR_CODES.VALIDATION_ERROR);
-    assert.match(res.message, /이미 이번 주 목표가/);
+    assert.match(res.message, /weekly goal already exists/i);
   }
 });
 

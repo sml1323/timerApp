@@ -22,6 +22,6 @@ export function validateTransition(from: SessionStatus, to: SessionStatus): Resu
   }
   return err(
     ERROR_CODES.SESSION_STATE_CONFLICT,
-    `세션 상태를 '${from}'에서 '${to}'로 변경할 수 없습니다`,
+    `Cannot change session state from '${from}' to '${to}'`,
   );
 }

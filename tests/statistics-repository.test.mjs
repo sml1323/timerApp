@@ -6,10 +6,10 @@ import assert from 'node:assert/strict';
  *
  * getTodayStudySummary, getWeeklyStudySummary, getStudyByTopic 의 핵심 로직을 검증한다:
  * - 학습(study) 세션만 집계, 휴식(break) 제외
- * - 완료(completed) 세션만 포함, interrupted/running 제외
+ * - 종료된(completed/interrupted) 세션만 포함, running 제외
+ * - 실제 소요 시간(endedAtMs - startedAtMs) 기준 집계
  * - 날짜 범위 필터링
  * - 주제별 그룹 집계 (활성 주제만)
- * - plannedDurationSec 기반 분 변환 정확성
  *
  * in-memory 방식으로 SQL 집계 로직을 재현하여 테스트한다.
  */
@@ -29,7 +29,7 @@ function resetStore() {
   ];
 }
 
-function addSession({ topicId, phaseType, status, plannedDurationSec, startedAtMs }) {
+function addSession({ topicId, phaseType, status, plannedDurationSec, startedAtMs, actualDurationSec = plannedDurationSec }) {
   store.push({
     id: crypto.randomUUID(),
     topicId,
@@ -37,7 +37,7 @@ function addSession({ topicId, phaseType, status, plannedDurationSec, startedAtM
     status,
     plannedDurationSec,
     startedAtMs,
-    endedAtMs: startedAtMs + plannedDurationSec * 1000,
+    endedAtMs: status === 'running' ? null : startedAtMs + actualDurationSec * 1000,
     createdAtMs: startedAtMs,
     updatedAtMs: startedAtMs,
   });
@@ -53,11 +53,13 @@ async function getTodayStudySummary(todayStartMs) {
   for (const s of store) {
     if (
       s.phaseType === 'study' &&
-      s.status === 'completed' &&
+      (s.status === 'completed' || s.status === 'interrupted') &&
       s.startedAtMs >= todayStartMs &&
       s.startedAtMs < todayEndMs
     ) {
-      totalSeconds += s.plannedDurationSec;
+      totalSeconds += s.endedAtMs !== null && s.endedAtMs >= s.startedAtMs
+        ? Math.round((s.endedAtMs - s.startedAtMs) / 1000)
+        : s.plannedDurationSec;
       sessionCount++;
     }
   }
@@ -73,11 +75,13 @@ async function getWeeklyStudySummary(weekStartAtMs) {
   for (const s of store) {
     if (
       s.phaseType === 'study' &&
-      s.status === 'completed' &&
+      (s.status === 'completed' || s.status === 'interrupted') &&
       s.startedAtMs >= weekStartAtMs &&
       s.startedAtMs < weekEndAtMs
     ) {
-      totalSeconds += s.plannedDurationSec;
+      totalSeconds += s.endedAtMs !== null && s.endedAtMs >= s.startedAtMs
+        ? Math.round((s.endedAtMs - s.startedAtMs) / 1000)
+        : s.plannedDurationSec;
       sessionCount++;
     }
   }
@@ -97,11 +101,13 @@ async function getStudyByTopic() {
   for (const s of store) {
     if (
       s.phaseType === 'study' &&
-      s.status === 'completed' &&
+      (s.status === 'completed' || s.status === 'interrupted') &&
       topicNameMap.has(s.topicId)
     ) {
       const existing = aggregates.get(s.topicId) ?? { totalSeconds: 0, sessionCount: 0 };
-      existing.totalSeconds += s.plannedDurationSec;
+      existing.totalSeconds += s.endedAtMs !== null && s.endedAtMs >= s.startedAtMs
+        ? Math.round((s.endedAtMs - s.startedAtMs) / 1000)
+        : s.plannedDurationSec;
       existing.sessionCount++;
       aggregates.set(s.topicId, existing);
     }
@@ -153,18 +159,18 @@ test('getTodayStudySummary — break 세션 제외', async () => {
   assert.equal(result.data.sessionCount, 1);
 });
 
-test('getTodayStudySummary — interrupted/running 세션 제외', async () => {
+test('getTodayStudySummary — interrupted는 실제 시간만 반영하고 running은 제외', async () => {
   const todayStart = getTodayStartAtMs();
 
   addSession({ topicId: 'topic-1', phaseType: 'study', status: 'completed', plannedDurationSec: 1500, startedAtMs: todayStart + 1000 });
-  addSession({ topicId: 'topic-1', phaseType: 'study', status: 'interrupted', plannedDurationSec: 1500, startedAtMs: todayStart + 2000 });
+  addSession({ topicId: 'topic-1', phaseType: 'study', status: 'interrupted', plannedDurationSec: 1500, startedAtMs: todayStart + 2000, actualDurationSec: 300 });
   addSession({ topicId: 'topic-1', phaseType: 'study', status: 'running', plannedDurationSec: 1500, startedAtMs: todayStart + 3000 });
 
   const result = await getTodayStudySummary(todayStart);
 
   assert.equal(result.ok, true);
-  assert.equal(result.data.totalMinutes, 25);
-  assert.equal(result.data.sessionCount, 1);
+  assert.equal(result.data.totalMinutes, 30);
+  assert.equal(result.data.sessionCount, 2);
 });
 
 test('getTodayStudySummary — 세션 없을 때 0 반환', async () => {
@@ -222,18 +228,18 @@ test('getWeeklyStudySummary — 주간 범위 밖 세션 제외', async () => {
   assert.equal(result.data.sessionCount, 1);
 });
 
-test('getWeeklyStudySummary — study만, completed만', async () => {
+test('getWeeklyStudySummary — study만, 종료된 세션만 반영', async () => {
   const weekStart = getWeekStartAtMs();
 
   addSession({ topicId: 'topic-1', phaseType: 'study', status: 'completed', plannedDurationSec: 1500, startedAtMs: weekStart + 1000 });
   addSession({ topicId: 'topic-1', phaseType: 'break', status: 'completed', plannedDurationSec: 300, startedAtMs: weekStart + 2000 });
-  addSession({ topicId: 'topic-1', phaseType: 'study', status: 'interrupted', plannedDurationSec: 1500, startedAtMs: weekStart + 3000 });
+  addSession({ topicId: 'topic-1', phaseType: 'study', status: 'interrupted', plannedDurationSec: 1500, startedAtMs: weekStart + 3000, actualDurationSec: 600 });
 
   const result = await getWeeklyStudySummary(weekStart);
 
   assert.equal(result.ok, true);
-  assert.equal(result.data.totalMinutes, 25);
-  assert.equal(result.data.sessionCount, 1);
+  assert.equal(result.data.totalMinutes, 35);
+  assert.equal(result.data.sessionCount, 2);
 });
 
 test('getWeeklyStudySummary — 세션 없을 때 0 반환', async () => {
@@ -281,17 +287,17 @@ test('getStudyByTopic — 아카이브 주제 제외', async () => {
   assert.equal(result.data[0].topicId, 'topic-1');
 });
 
-test('getStudyByTopic — break 제외, interrupted 제외', async () => {
+test('getStudyByTopic — break 제외, interrupted는 실제 시간만 반영', async () => {
   addSession({ topicId: 'topic-1', phaseType: 'study', status: 'completed', plannedDurationSec: 1500, startedAtMs: 1000 });
   addSession({ topicId: 'topic-1', phaseType: 'break', status: 'completed', plannedDurationSec: 300, startedAtMs: 2000 });
-  addSession({ topicId: 'topic-1', phaseType: 'study', status: 'interrupted', plannedDurationSec: 1500, startedAtMs: 3000 });
+  addSession({ topicId: 'topic-1', phaseType: 'study', status: 'interrupted', plannedDurationSec: 1500, startedAtMs: 3000, actualDurationSec: 300 });
 
   const result = await getStudyByTopic();
 
   assert.equal(result.ok, true);
   assert.equal(result.data.length, 1);
-  assert.equal(result.data[0].totalMinutes, 25);
-  assert.equal(result.data[0].sessionCount, 1);
+  assert.equal(result.data[0].totalMinutes, 30);
+  assert.equal(result.data[0].sessionCount, 2);
 });
 
 test('getStudyByTopic — 세션 없으면 빈 배열 반환', async () => {
@@ -312,14 +318,21 @@ test('getStudyByTopic — 결과가 totalMinutes 내림차순 정렬', async () 
   assert.equal(result.data[1].topicId, 'topic-1');
 });
 
-test('getTodayStudySummary — plannedDurationSec 기반 분 변환 반올림', async () => {
+test('getTodayStudySummary — 바로 중단한 세션은 0분으로 처리', async () => {
   const todayStart = getTodayStartAtMs();
 
-  // 1530초 = 25.5분 → 반올림 → 26분
-  addSession({ topicId: 'topic-1', phaseType: 'study', status: 'completed', plannedDurationSec: 1530, startedAtMs: todayStart + 1000 });
+  addSession({
+    topicId: 'topic-1',
+    phaseType: 'study',
+    status: 'interrupted',
+    plannedDurationSec: 1500,
+    startedAtMs: todayStart + 1000,
+    actualDurationSec: 0,
+  });
 
   const result = await getTodayStudySummary(todayStart);
 
   assert.equal(result.ok, true);
-  assert.equal(result.data.totalMinutes, 26);
+  assert.equal(result.data.totalMinutes, 0);
+  assert.equal(result.data.sessionCount, 1);
 });

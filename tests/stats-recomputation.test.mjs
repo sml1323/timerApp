@@ -35,7 +35,12 @@ async function setupTopic(id, name) {
   return topic;
 }
 
-async function addCompletedSession({ topicId, plannedDurationSec = 1500, startedAtMs = Date.now() }) {
+async function addCompletedSession({
+  topicId,
+  plannedDurationSec = 1500,
+  startedAtMs = Date.now(),
+  actualDurationSec = plannedDurationSec,
+}) {
   // createSession -> completeSession 흐름으로 테스트
   const createResult = await createSession({
     topicId,
@@ -51,8 +56,10 @@ async function addCompletedSession({ topicId, plannedDurationSec = 1500, started
   const completeResult = await completeSession({ sessionId: session.id });
   assert.ok(completeResult.ok);
 
-  // completeSession 시 endedAtMs 등이 현재 시간으로 세팅되므로 조작 필요하면 조작 (지금은 테스트에 문제 없음)
   const completedSession = completeResult.data;
+  completedSession.startedAtMs = startedAtMs;
+  completedSession.endedAtMs = startedAtMs + actualDurationSec * 1000;
+  completedSession.updatedAtMs = completedSession.endedAtMs;
   return completedSession;
 }
 

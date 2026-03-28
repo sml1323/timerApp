@@ -38,7 +38,7 @@ function addTopic(id, name) {
   topicStore.push({ id, name, status: 'active', createdAtMs: Date.now(), updatedAtMs: Date.now() });
 }
 
-function addSession({ topicId, phaseType, status, plannedDurationSec }) {
+function addSession({ topicId, phaseType, status, plannedDurationSec, actualDurationSec = plannedDurationSec }) {
   const weekStart = getWeekStartAtMs();
   sessionStore.push({
     id: crypto.randomUUID(),
@@ -47,7 +47,7 @@ function addSession({ topicId, phaseType, status, plannedDurationSec }) {
     status,
     plannedDurationSec,
     startedAtMs: weekStart + 1000,
-    endedAtMs: weekStart + 1000 + plannedDurationSec * 1000,
+    endedAtMs: status === 'running' ? null : weekStart + 1000 + actualDurationSec * 1000,
     createdAtMs: Date.now(),
     updatedAtMs: Date.now(),
   });
@@ -61,18 +61,25 @@ async function findAllByWeek(weekStartAtMs) {
 
 async function getWeeklyStudyMinutesByTopic(weekStartAtMs) {
   const weekEndAtMs = weekStartAtMs + 7 * 24 * 60 * 60 * 1000;
-  const map = new Map();
+  const secondsByTopic = new Map();
 
   for (const s of sessionStore) {
     if (
       s.phaseType === 'study' &&
-      s.status === 'completed' &&
+      (s.status === 'completed' || s.status === 'interrupted') &&
       s.startedAtMs >= weekStartAtMs &&
       s.startedAtMs < weekEndAtMs
     ) {
-      const mins = Math.round(s.plannedDurationSec / 60);
-      map.set(s.topicId, (map.get(s.topicId) ?? 0) + mins);
+      const durationSec = s.endedAtMs !== null && s.endedAtMs >= s.startedAtMs
+        ? Math.round((s.endedAtMs - s.startedAtMs) / 1000)
+        : s.plannedDurationSec;
+      secondsByTopic.set(s.topicId, (secondsByTopic.get(s.topicId) ?? 0) + durationSec);
     }
+  }
+
+  const map = new Map();
+  for (const [topicId, totalSeconds] of secondsByTopic.entries()) {
+    map.set(topicId, Math.round(totalSeconds / 60));
   }
   return { ok: true, data: map };
 }
@@ -236,4 +243,25 @@ test('loadGoalProgressThisWeek — 여러 주제의 진행 상태 동시 계산'
   assert.equal(p2.isAchieved, false); // 60/120
   assert.equal(p2.progressPercent, 50);
   assert.equal(p2.remainingMinutes, 60);
+});
+
+test('loadGoalProgressThisWeek — 바로 중단한 세션은 목표 진행 시간을 거의 올리지 않는다', async () => {
+  addTopic('topic-1', '물리');
+  addGoal({ topicId: 'topic-1', targetMinutes: 25 });
+  addSession({
+    topicId: 'topic-1',
+    phaseType: 'study',
+    status: 'interrupted',
+    plannedDurationSec: 1500,
+    actualDurationSec: 0,
+  });
+
+  const result = await loadGoalProgressThisWeek();
+
+  assert.equal(result.ok, true);
+  const progress = result.data[0];
+  assert.equal(progress.actualMinutes, 0);
+  assert.equal(progress.remainingMinutes, 25);
+  assert.equal(progress.progressPercent, 0);
+  assert.equal(progress.isAchieved, false);
 });

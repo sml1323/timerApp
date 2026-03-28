@@ -8,6 +8,20 @@ import { ok, type Result } from '../../shared/lib/result.js';
 import { getSessionStore } from './in-memory-session-adapter.js';
 import { findAllTopics } from './in-memory-topic-adapter.js';
 
+function getSessionDurationSeconds(
+  session: {
+    startedAtMs: number;
+    endedAtMs: number | null;
+    plannedDurationSec: number;
+  },
+): number {
+  if (session.endedAtMs !== null && session.endedAtMs >= session.startedAtMs) {
+    return Math.max(0, Math.round((session.endedAtMs - session.startedAtMs) / 1000));
+  }
+
+  return session.plannedDurationSec;
+}
+
 export async function getTodayStudySummary(
   todayStartMs: number
 ): Promise<Result<TodayStudySummary>> {
@@ -20,11 +34,11 @@ export async function getTodayStudySummary(
   for (const s of sessions) {
     if (
       s.phaseType === 'study' &&
-      s.status === 'completed' &&
+      (s.status === 'completed' || s.status === 'interrupted') &&
       s.startedAtMs >= todayStartMs &&
       s.startedAtMs < todayEndMs
     ) {
-      totalSeconds += s.plannedDurationSec;
+      totalSeconds += getSessionDurationSeconds(s);
       sessionCount++;
     }
   }
@@ -47,11 +61,11 @@ export async function getWeeklyStudySummary(
   for (const s of sessions) {
     if (
       s.phaseType === 'study' &&
-      s.status === 'completed' &&
+      (s.status === 'completed' || s.status === 'interrupted') &&
       s.startedAtMs >= weekStartAtMs &&
       s.startedAtMs < weekEndAtMs
     ) {
-      totalSeconds += s.plannedDurationSec;
+      totalSeconds += getSessionDurationSeconds(s);
       sessionCount++;
     }
   }
@@ -80,11 +94,11 @@ export async function getStudyByTopic(): Promise<Result<TopicStudySummary[]>> {
   for (const s of sessions) {
     if (
       s.phaseType === 'study' &&
-      s.status === 'completed' &&
+      (s.status === 'completed' || s.status === 'interrupted') &&
       topicNameMap.has(s.topicId) // 활성 주제만
     ) {
       const existing = aggregates.get(s.topicId) ?? { totalSeconds: 0, sessionCount: 0 };
-      existing.totalSeconds += s.plannedDurationSec;
+      existing.totalSeconds += getSessionDurationSeconds(s);
       existing.sessionCount++;
       aggregates.set(s.topicId, existing);
     }
