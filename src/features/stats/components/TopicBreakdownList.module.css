@@ -1,4 +1,4 @@
-/* TopicBreakdownList 스타일 */
+/* TopicBreakdownList -- Living Minimal Dark */
 
 .container {
   display: flex;
@@ -13,7 +13,7 @@
   margin: 0;
 }
 
-/* --- 리스트 --- */
+/* --- List --- */
 
 .list {
   list-style: none;
@@ -21,90 +21,56 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
 }
 
 .item {
-  background: var(--color-bg-elevated);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: var(--spacing-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  outline: none;
-  transition: box-shadow var(--transition-normal);
-}
-
-.item:focus-visible {
-  outline: var(--focus-ring-width) solid var(--focus-ring-color);
-  outline-offset: var(--focus-ring-offset);
-}
-
-.item:hover {
-  box-shadow: var(--shadow-md);
-}
-
-/* --- 항목 헤더 --- */
-
-.itemHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.topicName {
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-primary);
-}
-
-.topicTime {
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-}
-
-/* --- 프로그레스바 + 비율 --- */
-
-.itemDetails {
   display: flex;
   align-items: center;
   gap: var(--spacing-3);
+  height: 48px;
+  padding: 0 var(--spacing-3);
+  border-bottom: 1px solid var(--color-border);
+  transition: background var(--transition-fast);
 }
 
-.progressTrack {
-  flex: 1;
+.item:last-child {
+  border-bottom: none;
+}
+
+.item:hover {
+  background: var(--color-surface-hover);
+}
+
+/* --- Color dot --- */
+
+.colorDot {
+  width: 8px;
   height: 8px;
-  background: var(--color-neutral-100);
-  border-radius: var(--radius-full);
-  overflow: hidden;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.progressFill {
-  height: 100%;
-  background: var(--color-primary);
-  border-radius: var(--radius-full);
-  transition: width var(--transition-slow);
+/* --- Topic name & time --- */
+
+.topicName {
+  flex: 1;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   min-width: 0;
 }
 
-.percentText {
+.topicTime {
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-primary);
-  min-width: 36px;
-  text-align: right;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
 }
 
-/* --- 세션 수 --- */
-
-.sessionCount {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
-}
-
-/* --- 빈 상태 --- */
+/* --- Empty state --- */
 
 .emptyState {
   display: flex;
@@ -112,13 +78,6 @@
   align-items: center;
   gap: var(--spacing-2);
   padding: var(--spacing-8) 0;
-}
-
-.emptyCharacter {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  opacity: 0.6;
 }
 
 .emptyMessage {
@@ -134,18 +93,10 @@
   margin: 0;
 }
 
-/* --- 반응형 --- */
+/* --- Responsive --- */
 
 @media (max-width: 600px) {
-  .item {
-    padding: var(--spacing-3);
-  }
-
   .topicName {
-    font-size: var(--font-size-sm);
-  }
-
-  .topicTime {
     font-size: var(--font-size-sm);
   }
 }

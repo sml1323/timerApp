@@ -46,7 +46,7 @@ export async function loadStatsPageData(): Promise<Result<StatsPageData>> {
   } catch (error) {
     return err(
       'UNEXPECTED_ERROR',
-      `통계 데이터 로드 중 오류: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while loading statistics data: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }

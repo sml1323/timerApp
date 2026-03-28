@@ -1,4 +1,4 @@
-/* RecordCorrectionDialog — 기록 주제 수정 다이얼로그 */
+/* RecordCorrectionDialog -- Living Minimal Dark */
 
 .overlay {
   position: fixed;
@@ -7,8 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.60);
   animation: fadeIn var(--transition-fast) ease-out;
 }
 
@@ -22,9 +21,9 @@
   max-width: 420px;
   margin: var(--spacing-4);
   padding: var(--spacing-6);
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   animation: slideUp var(--transition-normal) ease-out;
 }
@@ -61,17 +60,17 @@
 }
 
 .editableLabel {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
-/* 수정 가능 필드 */
+/* Editable select field */
 .select {
   width: 100%;
   padding: var(--spacing-2) var(--spacing-3);
   font-size: var(--font-size-base);
   color: var(--color-text-primary);
-  background: var(--color-bg-default);
-  border: 2px solid var(--color-primary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
   outline: none;
   transition: border-color var(--transition-fast);
@@ -80,18 +79,18 @@
 }
 
 .select:focus {
-  border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb, 99, 102, 241), 0.15);
+  border-color: var(--color-border-strong);
+  box-shadow: 0 0 0 2px var(--focus-ring-color);
 }
 
-/* 수정 불가 필드 */
+/* Readonly field */
 .readonlyField {
   width: 100%;
   padding: var(--spacing-2) var(--spacing-3);
   font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
-  background: var(--color-bg-disabled, var(--color-bg-tertiary));
-  border: 1px solid var(--color-border-default);
+  color: var(--color-text-tertiary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-sizing: border-box;
   cursor: not-allowed;
@@ -99,44 +98,40 @@
 }
 
 .readonlyHint {
-  font-size: var(--font-size-xs, 0.75rem);
-  color: var(--color-text-tertiary, var(--color-text-secondary));
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
   margin: 0;
   display: flex;
   align-items: center;
   gap: var(--spacing-1);
 }
 
-.lockIcon {
-  font-size: var(--font-size-xs, 0.75rem);
-}
-
 .statusTag {
   display: inline-block;
-  font-size: var(--font-size-xs, 0.75rem);
+  font-size: var(--font-size-xs);
   padding: 1px var(--spacing-1);
   border-radius: var(--radius-sm);
   margin-left: var(--spacing-1);
 }
 
 .editableTag {
-  background: rgba(var(--color-primary-rgb, 99, 102, 241), 0.1);
-  color: var(--color-primary);
+  background: var(--color-surface-active);
+  color: var(--color-text-secondary);
 }
 
 .readonlyTag {
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-tertiary, var(--color-text-secondary));
+  background: var(--color-surface);
+  color: var(--color-text-tertiary);
 }
 
-/* 에러 */
+/* Error */
 .errorMessage {
   margin: 0;
   font-size: var(--font-size-sm);
   color: var(--color-error);
 }
 
-/* 액션 */
+/* Actions */
 .actions {
   display: flex;
   justify-content: flex-end;

@@ -22,23 +22,19 @@ export function GoalSettingsDialog({ topicName, topicId, existingGoal, isOpen, o
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
 
-  // 다이얼로그 열릴 때 초기화 및 포커스
   useEffect(() => {
     if (isOpen) {
       triggerRef.current = document.activeElement as HTMLElement;
       setValue(existingGoal ? String(existingGoal.targetMinutes) : '');
       setError(null);
-      // 다음 프레임에서 포커스 이동
       requestAnimationFrame(() => {
         inputRef.current?.focus();
       });
     } else {
-      // 닫힐 때 트리거 버튼으로 포커스 복원
       triggerRef.current?.focus();
     }
   }, [isOpen, existingGoal]);
 
-  // ESC 키로 닫기
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Escape') {
       e.preventDefault();
@@ -46,7 +42,6 @@ export function GoalSettingsDialog({ topicName, topicId, existingGoal, isOpen, o
     }
   };
 
-  // 오버레이 클릭으로 닫기
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -59,11 +54,10 @@ export function GoalSettingsDialog({ topicName, topicId, existingGoal, isOpen, o
 
     const targetMinutes = Number(value);
 
-    // Zod 클라이언트 검증
     const parsed = UpdateWeeklyGoalSchema.safeParse({ targetMinutes });
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      setError(issue?.message ?? '입력값이 올바르지 않습니다');
+      setError(issue?.message ?? '잘못된 입력입니다');
       return;
     }
 
@@ -98,7 +92,7 @@ export function GoalSettingsDialog({ topicName, topicId, existingGoal, isOpen, o
         aria-modal="true"
         aria-labelledby={titleId}
       >
-        <h2 id={titleId} className={styles.title}>주간 목표 설정</h2>
+        <h2 id={titleId} className={styles.title}>주간 목표</h2>
         <p className={styles.subtitle}>{topicName}</p>
 
         <form onSubmit={handleSubmit} noValidate>

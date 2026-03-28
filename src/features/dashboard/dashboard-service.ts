@@ -59,7 +59,7 @@ export async function loadDashboardData(): Promise<Result<DashboardData>> {
   } catch (error) {
     return err(
       'UNEXPECTED_ERROR',
-      `대시보드 데이터 로드 중 오류: ${error instanceof Error ? error.message : String(error)}`,
+      `An error occurred while loading dashboard data: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }

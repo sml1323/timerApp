@@ -39,7 +39,7 @@ export async function loadSessionRecords(): Promise<Result<SessionRecordItem[]>>
     .filter((s) => s.phaseType === 'study' && (s.status === 'completed' || s.status === 'interrupted'))
     .map((session) => ({
       session,
-      topicName: topicMap.get(session.topicId) ?? '삭제된 주제',
+      topicName: topicMap.get(session.topicId) ?? 'Deleted Topic',
     }));
 
   return ok(records);

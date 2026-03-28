@@ -14,19 +14,19 @@ function getProgressMessage(progress: GoalProgress, variant: 'default' | 'compac
   }
 
   if (actualMinutes === 0) {
-    return `이번 주 ${targetMinutes}분 목표, 시작해볼까요?`;
+    return `주간 목표: ${targetMinutes}분. 시작할 준비가 되셨나요?`;
   }
 
   if (isAchieved && actualMinutes > targetMinutes) {
     const excess = actualMinutes - targetMinutes;
-    return `목표를 ${excess}분 초과 달성했어요`;
+    return `목표보다 ${excess}분 초과 달성`;
   }
 
   if (isAchieved) {
-    return '이번 주 목표 달성! 🎉';
+    return '주간 목표 달성!';
   }
 
-  return `이번 주 ${remainingMinutes}분 남았어요`;
+  return `이번 주 ${remainingMinutes}분 남음`;
 }
 
 export function GoalProgressInline({ progress, variant = 'default' }: GoalProgressInlineProps) {

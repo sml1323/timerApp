@@ -1,3 +1,5 @@
+/* TopicForm -- Living Minimal Dark */
+
 .form {
   width: 100%;
 }
@@ -27,8 +29,8 @@
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
   color: var(--color-text-primary);
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-default);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   outline: none;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
@@ -39,12 +41,12 @@
 }
 
 .input:focus {
-  border-color: var(--color-border-focus);
+  border-color: var(--color-border-strong);
   box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
 }
 
 .input:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -54,7 +56,7 @@
 
 .inputError:focus {
   border-color: var(--color-error);
-  box-shadow: 0 0 0 var(--focus-ring-width) var(--color-error-light);
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--color-error-surface);
 }
 
 .errorMessage {

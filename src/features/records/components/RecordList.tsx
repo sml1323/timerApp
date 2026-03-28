@@ -1,5 +1,4 @@
 import type { SessionRecordItem } from '../record-correction-service';
-import defaultCharacter from '../../../assets/characters/default.svg';
 import styles from './RecordList.module.css';
 
 function formatDuration(sec: number): string {
@@ -27,7 +26,7 @@ export function RecordList({ records, isLoading, error, onCorrect }: RecordListP
   if (error) {
     return (
       <section className={styles.recordSection}>
-        <h2>세션 기록</h2>
+        <h2>학습 기록</h2>
         <p role="alert" className={styles.errorText}>기록을 불러올 수 없습니다.</p>
       </section>
     );
@@ -36,8 +35,8 @@ export function RecordList({ records, isLoading, error, onCorrect }: RecordListP
   if (isLoading) {
     return (
       <section className={styles.recordSection}>
-        <h2>세션 기록</h2>
-        <p className={styles.loadingText} aria-busy="true">로딩 중…</p>
+        <h2>학습 기록</h2>
+        <p className={styles.loadingText} aria-busy="true">불러오는 중...</p>
       </section>
     );
   }
@@ -45,10 +44,9 @@ export function RecordList({ records, isLoading, error, onCorrect }: RecordListP
   if (records.length === 0) {
     return (
       <section className={styles.recordSection}>
-        <h2>세션 기록</h2>
+        <h2>학습 기록</h2>
         <div className={styles.emptyState}>
-          <img src={defaultCharacter} alt="" aria-hidden="true" className={styles.emptyCharacter} />
-          <p className={styles.emptyMessage}>아직 완료된 학습 기록이 없어요</p>
+          <p className={styles.emptyMessage}>아직 완료된 학습 세션이 없습니다.</p>
         </div>
       </section>
     );
@@ -56,7 +54,7 @@ export function RecordList({ records, isLoading, error, onCorrect }: RecordListP
 
   return (
     <section className={styles.recordSection}>
-      <h2>세션 기록</h2>
+      <h2>학습 기록</h2>
       <ul role="list" className={styles.list}>
         {records.map((item) => {
           const duration = item.session.endedAtMs && item.session.startedAtMs
@@ -77,7 +75,7 @@ export function RecordList({ records, isLoading, error, onCorrect }: RecordListP
                 type="button"
                 className={styles.editButton}
                 onClick={() => onCorrect(item.session.id)}
-                aria-label={`${item.topicName} 세션 기록 주제 수정`}
+                aria-label={`${item.topicName} 세션 기록 수정`}
               >
                 수정
               </button>

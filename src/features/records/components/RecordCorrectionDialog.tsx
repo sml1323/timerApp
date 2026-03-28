@@ -24,7 +24,6 @@ export function RecordCorrectionDialog({ record, topics, isOpen, onClose, onSave
   const selectRef = useRef<HTMLSelectElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
 
-  // 다이얼로그 열릴 때 초기화 및 포커스
   useEffect(() => {
     if (isOpen && record) {
       triggerRef.current = document.activeElement as HTMLElement;
@@ -38,7 +37,6 @@ export function RecordCorrectionDialog({ record, topics, isOpen, onClose, onSave
     }
   }, [isOpen, record]);
 
-  // ESC 키로 닫기 및 포커스 트랩
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Escape') {
       e.preventDefault();
@@ -67,7 +65,6 @@ export function RecordCorrectionDialog({ record, topics, isOpen, onClose, onSave
     }
   };
 
-  // 오버레이 클릭으로 닫기
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -80,7 +77,7 @@ export function RecordCorrectionDialog({ record, topics, isOpen, onClose, onSave
     setError(null);
 
     if (!selectedTopicId) {
-      setError('주제를 선택해주세요');
+      setError('주제를 선택해주세요.');
       return;
     }
 
@@ -90,7 +87,7 @@ export function RecordCorrectionDialog({ record, topics, isOpen, onClose, onSave
       if (result.ok) {
         onClose();
       } else {
-        setError(result.message ?? '기록 수정에 실패했습니다');
+        setError(result.message ?? '기록 수정에 실패했습니다.');
       }
     } finally {
       setIsSaving(false);
@@ -124,7 +121,6 @@ export function RecordCorrectionDialog({ record, topics, isOpen, onClose, onSave
         <h2 id={titleId} className={styles.title}>기록 수정</h2>
 
         <form onSubmit={handleSubmit} noValidate>
-          {/* 수정 가능: 주제 */}
           <div className={styles.fieldGroup}>
             <label htmlFor={topicSelectId} className={`${styles.label} ${styles.editableLabel}`}>
               주제 <span className={`${styles.statusTag} ${styles.editableTag}`}>수정 가능</span>
@@ -150,10 +146,9 @@ export function RecordCorrectionDialog({ record, topics, isOpen, onClose, onSave
             </select>
           </div>
 
-          {/* 수정 불가: 학습 시간 */}
           <div className={styles.fieldGroup}>
             <label htmlFor={durationFieldId} className={styles.label}>
-              학습 시간 <span className={`${styles.statusTag} ${styles.readonlyTag}`}>수정 불가</span>
+              학습 시간 <span className={`${styles.statusTag} ${styles.readonlyTag}`}>잠금</span>
             </label>
             <input
               id={durationFieldId}
@@ -165,8 +160,7 @@ export function RecordCorrectionDialog({ record, topics, isOpen, onClose, onSave
               aria-disabled="true"
             />
             <p className={styles.readonlyHint}>
-              <span className={styles.lockIcon} aria-hidden="true">🔒</span>
-              세션 시간은 실제 기록이므로 수정할 수 없습니다
+              학습 시간은 기록된 타이머 기반이며 수정할 수 없습니다.
             </p>
           </div>
 

@@ -18,11 +18,8 @@ interface TopicCardProps {
 }
 
 function formatDate(ms: number): string {
-  return new Intl.DateTimeFormat('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date(ms));
+  const d = new Date(ms);
+  return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
 }
 
 export function TopicCard({ topic, weeklyGoal, goalProgress, onEdit, onArchive, onOpenGoalDialog }: TopicCardProps) {
@@ -34,7 +31,6 @@ export function TopicCard({ topic, weeklyGoal, goalProgress, onEdit, onArchive, 
   const [isArchiving, setIsArchiving] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // 수정 모드 진입 시 input에 자동 포커스
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
@@ -56,21 +52,18 @@ export function TopicCard({ topic, weeklyGoal, goalProgress, onEdit, onArchive, 
   };
 
   const handleSaveEdit = async () => {
-    // 1. Zod 인라인 검증
     const parsed = UpdateTopicSchema.safeParse({ name: editName });
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      setEditError(issue?.message ?? '입력값이 올바르지 않습니다');
+      setEditError(issue?.message ?? '잘못된 입력입니다');
       return;
     }
 
-    // 2. 변경 없으면 취소
     if (parsed.data.name === topic.name) {
       handleCancelEdit();
       return;
     }
 
-    // 3. 저장 호출
     setIsSaving(true);
     setEditError(null);
     const result = await onEdit(topic.id, parsed.data.name);
@@ -108,15 +101,14 @@ export function TopicCard({ topic, weeklyGoal, goalProgress, onEdit, onArchive, 
     setIsArchiving(false);
 
     if (!result.ok) {
-      setEditError(result.message ?? '주제 정리에 실패했습니다');
+      setEditError(result.message ?? '주제 보관에 실패했습니다');
       setShowArchiveConfirm(false);
     }
-    // result.ok → useTopics refetch로 목록에서 자동 제거
   };
 
   const inputId = `edit-topic-${topic.id}`;
 
-  // 수정 모드
+  // Edit mode
   if (isEditing) {
     return (
       <div className={cn(styles.card, styles.editing)}>
@@ -157,27 +149,27 @@ export function TopicCard({ topic, weeklyGoal, goalProgress, onEdit, onArchive, 
     );
   }
 
-  // 아카이브 확인 모드
+  // Archive confirm mode
   if (showArchiveConfirm) {
     return (
       <div className={cn(styles.card, styles.archiveConfirmCard)}>
         <div
           className={styles.archiveConfirm}
           role="alertdialog"
-          aria-label="주제 정리 확인"
+          aria-label="주제 보관 확인"
         >
           <p className={styles.archiveMessage}>
-            &apos;{topic.name}&apos;을(를) 정리하시겠습니까?
+            &apos;{topic.name}&apos;을(를) 보관하시겠습니까?
           </p>
           <p className={styles.archiveHint}>
-            주제 선택 목록에서 숨겨지지만, 기존 학습 기록은 유지됩니다.
+            선택 목록에서 숨겨지지만, 학습 기록은 유지됩니다.
           </p>
           <div className={styles.archiveActions}>
             <Button variant="text" size="small" onClick={handleCancelArchive} disabled={isArchiving}>
               취소
             </Button>
             <Button variant="destructive" size="small" onClick={handleConfirmArchive} isLoading={isArchiving}>
-              정리
+              보관
             </Button>
           </div>
         </div>
@@ -189,19 +181,20 @@ export function TopicCard({ topic, weeklyGoal, goalProgress, onEdit, onArchive, 
     onOpenGoalDialog?.(topic.id);
   };
 
-  // 기본 보기 모드
   return (
     <div className={styles.card}>
       <div className={styles.info}>
-        <span className={styles.name}>{topic.name}</span>
+        <div className={styles.headerRow}>
+          <span className={styles.name}>{topic.name}</span>
+          <span className={styles.date}>{formatDate(topic.createdAtMs)}</span>
+        </div>
         {goalProgress ? (
           <div className={styles.goalProgressArea}>
-            <GoalProgressInline progress={goalProgress} />
+            <GoalProgressInline progress={goalProgress} variant="compact" />
           </div>
         ) : weeklyGoal ? (
           <span className={styles.goalBadge}>목표: {weeklyGoal.targetMinutes}분/주</span>
         ) : null}
-        <span className={styles.date}>{formatDate(topic.createdAtMs)}</span>
       </div>
       <div className={styles.actions}>
         <Button variant="text" size="small" onClick={handleOpenGoalDialog}>
@@ -211,7 +204,7 @@ export function TopicCard({ topic, weeklyGoal, goalProgress, onEdit, onArchive, 
           수정
         </Button>
         <Button variant="destructive" size="small" onClick={handleArchiveClick}>
-          정리
+          보관
         </Button>
       </div>
     </div>

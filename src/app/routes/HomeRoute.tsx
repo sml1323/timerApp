@@ -1,14 +1,18 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { TopicQuickSelectPanel } from '../../features/session/components/TopicQuickSelectPanel';
 import { useTopicSelect } from '../../features/session/hooks/useTopicSelect';
 import { useGoalProgress } from '../../features/goals/hooks/useGoalProgress';
 import { useDashboardData } from '../../features/dashboard/hooks/useDashboardData';
-import { StudyStatusSummaryCard } from '../../features/dashboard/components/StudyStatusSummaryCard';
 import { beginStudySession } from '../../features/session/session-service';
 import { useSessionStore } from '../../features/session/state/sessionStore';
-import { Button } from '../../shared/ui/Button/Button';
 import styles from './HomeRoute.module.css';
+
+function formatMinutes(minutes: number): string {
+  if (minutes < 60) return `${minutes}분`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m > 0 ? `${h}시간 ${m}분` : `${h}시간`;
+}
 
 export function HomeRoute() {
   const navigate = useNavigate();
@@ -16,18 +20,12 @@ export function HomeRoute() {
   const activeSession = useSessionStore((state) => state.activeSession);
   const sessionPhase = useSessionStore((state) => state.sessionPhase);
   const { progressList } = useGoalProgress();
-  const { data: dashboardData, isLoading: isDashboardLoading, error: dashboardError } = useDashboardData();
-
-  const goalProgressMap = useMemo(() => {
-    const map = new Map<string, (typeof progressList)[number]>();
-    for (const p of progressList) {
-      map.set(p.topicId, p);
-    }
-    return map;
-  }, [progressList]);
+  const { data: dashboardData } = useDashboardData();
 
   const achievedCount = progressList.filter((p) => p.isAchieved).length;
   const totalGoalCount = progressList.length;
+
+  const weeklyMinutes = dashboardData?.weeklyMinutes ?? 0;
 
   const [startError, setStartError] = useState<string | null>(null);
   const [isStarting, setIsStarting] = useState(false);
@@ -58,7 +56,7 @@ export function HomeRoute() {
         setStartError(result.message);
       }
     } catch {
-      setStartError('세션 시작 중 예상치 못한 오류가 발생했습니다.');
+      setStartError('세션을 시작하는 중 오류가 발생했습니다.');
     } finally {
       setIsStarting(false);
     }
@@ -66,48 +64,79 @@ export function HomeRoute() {
 
   return (
     <section className={styles.homePage}>
-      <h1>홈</h1>
-      <StudyStatusSummaryCard
-        data={dashboardData}
-        isLoading={isDashboardLoading}
-        error={dashboardError}
-      />
-      <section aria-label="주제 선택 및 세션 시작" className={styles.quickStartSection}>
-        <h2>학습 시작</h2>
+      {/* Hero: Weekly goal progress */}
+      <div className={styles.heroSection}>
+        <span className={styles.heroLabel}>이번 주 학습</span>
+        <span className={styles.heroNumber}>{formatMinutes(weeklyMinutes)}</span>
         {totalGoalCount > 0 && (
-          <p className={styles.goalSummary}>
-            이번 주 목표 {totalGoalCount}개 중 {achievedCount}개 달성
-          </p>
+          <span className={styles.heroSub}>
+            {achievedCount}/{totalGoalCount} 목표 달성
+          </span>
         )}
-        {hasRunningSession && (
-          <div className={styles.resumeNotice}>
-            <p className={styles.resumeMessage}>이미 진행 중인 세션이 있습니다.</p>
-            <Button variant="secondary" onClick={handleResumeSession}>
-              세션으로 돌아가기
-            </Button>
+      </div>
+
+      {/* Resume notice */}
+      {hasRunningSession && (
+        <div className={styles.resumeNotice}>
+          <span className={styles.resumeMessage}>진행 중인 세션이 있습니다</span>
+          <button
+            type="button"
+            className={styles.resumeButton}
+            onClick={handleResumeSession}
+          >
+            돌아가기
+          </button>
+        </div>
+      )}
+
+      {/* Topic chips */}
+      <div className={styles.chipSection}>
+        <span className={styles.chipLabel}>주제 선택</span>
+        {isLoading && <p className={styles.loadingText}>불러오는 중...</p>}
+        {error && <p className={styles.errorMessage}>{error}</p>}
+        {!isLoading && !error && topics.length === 0 && (
+          <p className={styles.emptyText}>아직 주제가 없습니다. 주제를 먼저 추가해주세요.</p>
+        )}
+        {topics.length > 0 && (
+          <div className={styles.chipWrap} role="listbox" aria-label="주제 선택">
+            {topics.map((topic) => (
+              <button
+                key={topic.id}
+                type="button"
+                role="option"
+                aria-selected={topic.id === selectedTopicId}
+                className={`${styles.chip} ${topic.id === selectedTopicId ? styles.chipSelected : ''}`}
+                onClick={() => selectTopic(topic.id)}
+              >
+                {topic.name}
+              </button>
+            ))}
           </div>
         )}
-        <TopicQuickSelectPanel
-          topics={topics}
-          isLoading={isLoading}
-          error={error}
-          selectedTopicId={selectedTopicId}
-          onSelectTopic={selectTopic}
-          goalProgressMap={goalProgressMap}
-        />
-        {startError && (
-          <p role="alert" className={styles.errorMessage}>
-            {startError}
-          </p>
-        )}
-        <Button
-          variant="primary"
-          disabled={!isReady || isStarting || hasRunningSession}
-          onClick={handleStartSession}
+      </div>
+
+      {/* Start CTA */}
+      {startError && (
+        <p role="alert" className={styles.errorMessage}>
+          {startError}
+        </p>
+      )}
+      <button
+        type="button"
+        className={styles.startButton}
+        disabled={!isReady || isStarting || hasRunningSession}
+        onClick={handleStartSession}
+      >
+        <svg
+          className={styles.playIcon}
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
         >
-          {isStarting ? '시작 중...' : '학습 시작'}
-        </Button>
-      </section>
+          <path d="M8 5v14l11-7z" />
+        </svg>
+        {isStarting ? '시작하는 중...' : '시작'}
+      </button>
     </section>
   );
 }

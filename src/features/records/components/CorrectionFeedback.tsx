@@ -1,5 +1,4 @@
 import { useEffect, useRef, useCallback } from 'react';
-import speakCharacter from '../../../assets/characters/speak.svg';
 import styles from './CorrectionFeedback.module.css';
 
 interface CorrectionFeedbackProps {
@@ -36,13 +35,7 @@ export function CorrectionFeedback({ isVisible, onDismiss }: CorrectionFeedbackP
       onClick={onDismiss}
       onKeyDown={handleKeyDown}
     >
-      <img
-        src={speakCharacter}
-        alt=""
-        aria-hidden="true"
-        className={styles.character}
-      />
-      <p className={styles.message}>기록이 수정되었습니다. 통계에 반영되었어요.</p>
+      <p className={styles.message}>기록이 수정되었습니다. 통계가 갱신되었습니다.</p>
     </div>
   );
 }

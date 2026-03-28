@@ -1,42 +1,258 @@
-/* StatsRoute 페이지 레이아웃 스타일 */
+/* StatsRoute -- Living Minimal Dark */
 
 .statsPage {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-6);
-  padding: var(--spacing-4);
-  max-width: 640px;
+  padding: var(--spacing-5);
+  max-width: 860px;
   margin: 0 auto;
   width: 100%;
 }
 
-.statsPage h1 {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  margin: 0;
+/* --- Hero --- */
+
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4) 0;
 }
 
-/* --- 에러 --- */
+.title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* --- Week navigation --- */
+
+.rangeRow {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.rangeArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 24px;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.rangeArrow:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  transform: scale(1.04);
+}
+
+.rangeArrow:disabled {
+  cursor: not-allowed;
+}
+
+.rangeArrowDisabled {
+  opacity: 0.3;
+}
+
+.rangeTextBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  text-align: center;
+}
+
+.rangeLabel {
+  margin: 0;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.rangeSummary {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* --- Goal band hero --- */
+
+.goalBand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-6) 0;
+}
+
+.goalBandLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.goalBandValue {
+  font-family: var(--font-family-mono);
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: var(--font-weight-light);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+/* --- Chart --- */
+
+.chartGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 14px;
+  align-items: end;
+  min-height: 300px;
+}
+
+.chartSkeleton {
+  min-height: 300px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-hover) 37%,
+    var(--color-surface) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.chartColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.barMinutes {
+  min-height: 20px;
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+.barTrack {
+  width: min(70px, 100%);
+  height: 260px;
+  padding: 10px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.barFill {
+  width: 100%;
+  min-height: 10px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.6) 0%, rgba(99, 102, 241, 0.25) 100%);
+  transition: height var(--transition-slow);
+}
+
+.barFillEmpty {
+  background: var(--color-surface-hover);
+}
+
+.barLabel {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+/* --- Summary grid --- */
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.summaryCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.summaryLabel {
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.summaryValue {
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.summaryMeta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* --- Breakdown section --- */
+
+.breakdownSection {
+  padding-top: var(--spacing-4);
+}
+
+/* --- States --- */
 
 .errorText {
   font-size: var(--font-size-sm);
   color: var(--color-error);
   margin: 0;
   text-align: center;
-  padding: var(--spacing-8) 0;
+  padding: var(--spacing-10) 0;
 }
 
-/* --- 로딩 스켈레톤 --- */
+.noticeText {
+  margin: 0;
+  padding: var(--spacing-4) 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
 
 .skeleton {
-  min-height: 200px;
-  border-radius: var(--radius-lg);
+  min-height: 380px;
+  border-radius: var(--radius-md);
   background: linear-gradient(
     90deg,
-    var(--color-bg-tertiary) 25%,
-    var(--color-bg-secondary) 37%,
-    var(--color-bg-tertiary) 63%
+    var(--color-surface) 25%,
+    var(--color-surface-hover) 37%,
+    var(--color-surface) 63%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
@@ -47,25 +263,16 @@
   100% { background-position: -200% 0; }
 }
 
-/* --- 빈 상태 --- */
-
 .emptyState {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-10) 0;
-}
-
-.emptyCharacter {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  opacity: 0.6;
+  gap: var(--spacing-3);
+  padding: var(--spacing-10) 0 var(--spacing-4);
 }
 
 .emptyMessage {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-primary);
   margin: 0;
@@ -75,17 +282,54 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   margin: 0;
+  text-align: center;
 }
 
-/* --- 반응형 --- */
+/* --- Responsive --- */
 
-@media (max-width: 600px) {
+@media (max-width: 760px) {
   .statsPage {
-    padding: var(--spacing-3);
-    gap: var(--spacing-4);
+    padding: var(--spacing-4) var(--spacing-3) var(--spacing-8);
   }
 
-  .statsPage h1 {
-    font-size: var(--font-size-xl);
+  .chartGrid {
+    gap: 10px;
+    min-height: 240px;
+  }
+
+  .barTrack {
+    width: min(52px, 100%);
+    height: 200px;
+    padding: 8px;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .rangeRow {
+    grid-template-columns: 32px 1fr 32px;
+  }
+
+  .rangeArrow {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+
+  .chartGrid {
+    gap: 8px;
+  }
+
+  .barTrack {
+    width: 100%;
+    height: 170px;
+    padding: 6px;
+  }
+
+  .barLabel {
+    font-size: var(--font-size-sm);
   }
 }

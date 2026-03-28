@@ -17,11 +17,10 @@ export function TopicForm({ onSubmit }: TopicFormProps) {
     e.preventDefault();
     setError(null);
 
-    // Zod 클라이언트 검증
     const parsed = CreateTopicSchema.safeParse({ name });
     if (!parsed.success) {
       const issue = parsed.error.issues[0];
-      setError(issue?.message ?? '입력값이 올바르지 않습니다');
+      setError(issue?.message ?? '잘못된 입력입니다');
       return;
     }
 

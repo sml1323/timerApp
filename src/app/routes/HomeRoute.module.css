@@ -1,4 +1,4 @@
-/* HomeRoute 스타일 */
+/* HomeRoute -- Living Minimal Dark */
 
 .homePage {
   display: flex;
@@ -7,25 +7,168 @@
   padding: var(--spacing-6);
   max-width: 640px;
   margin: 0 auto;
+  width: 100%;
 }
 
-.homePage h1 {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
+/* --- Hero: Weekly goal progress --- */
+
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-10) 0 var(--spacing-6);
+}
+
+.heroLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.heroNumber {
+  font-family: var(--font-family-mono);
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: var(--font-weight-light);
   color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+.heroSub {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* --- Resume notice --- */
+
+.resumeNotice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.resumeMessage {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.resumeButton {
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.resumeButton:hover {
+  background: var(--color-surface-active);
+}
+
+/* --- Topic chips --- */
+
+.chipSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.chipLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-tertiary);
+}
+
+.chipWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.chip {
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.chip:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.chipSelected {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
+}
+
+/* --- Start CTA --- */
+
+.startButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  width: 100%;
+  padding: var(--spacing-4);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-bg);
+  background: var(--color-text-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.startButton:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.startButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.playIcon {
+  width: 20px;
+  height: 20px;
+}
+
+/* --- States --- */
+
+.loadingText {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
   margin: 0;
 }
 
-.quickStartSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-}
-
-.quickStartSection h2 {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+.emptyText {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
   margin: 0;
 }
 
@@ -35,33 +178,16 @@
   margin: 0;
 }
 
-.goalSummary {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-.resumeNotice {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-4);
-  padding: var(--spacing-4);
-  background: var(--color-primary-light);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-lg);
-}
-
-.resumeMessage {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-primary);
-}
+/* --- Responsive --- */
 
 @media (max-width: 600px) {
   .homePage {
     padding: var(--spacing-4);
     gap: var(--spacing-6);
+  }
+
+  .heroSection {
+    padding: var(--spacing-8) 0 var(--spacing-4);
   }
 
   .resumeNotice {

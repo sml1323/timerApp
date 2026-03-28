@@ -1,20 +1,21 @@
+/* CorrectionFeedback -- Living Minimal Dark */
+
 .feedback {
   display: flex;
   align-items: center;
   gap: var(--spacing-3);
   padding: var(--spacing-3) var(--spacing-4);
-  background-color: var(--color-bg-secondary);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   margin-top: var(--spacing-4);
   animation: feedbackFadeIn 0.3s ease-out;
   cursor: pointer;
+  transition: background var(--transition-fast);
 }
 
-.character {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
+.feedback:hover {
+  background: var(--color-surface-hover);
 }
 
 .message {

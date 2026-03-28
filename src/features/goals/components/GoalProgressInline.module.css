@@ -1,4 +1,4 @@
-/* GoalProgressInline 스타일 */
+/* GoalProgressInline -- Living Minimal Dark */
 
 /* --- Default variant --- */
 
@@ -11,14 +11,14 @@
 
 .barTrack {
   height: 6px;
-  background: var(--color-bg-tertiary);
+  background: var(--color-surface-active);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
 
 .bar {
   height: 100%;
-  background: var(--color-primary);
+  background: var(--color-text-secondary);
   border-radius: var(--radius-full);
   transition: width var(--transition-normal);
 }
@@ -67,7 +67,7 @@
 .miniBarTrack {
   flex: 1;
   height: 4px;
-  background: var(--color-bg-tertiary);
+  background: var(--color-surface-active);
   border-radius: var(--radius-full);
   overflow: hidden;
   min-width: 40px;
