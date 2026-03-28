@@ -1,33 +1,54 @@
-/* AppShell — 2단 레이아웃: 사이드바(nav) + 메인(content) */
+/* AppShell — Living Minimal: single layout with posture system */
 
-/* 기본: Standard Desktop (800–1199px) */
 .shell {
+  position: relative;
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
+  background: var(--color-bg);
+  overflow: hidden;
 }
 
 .content {
   flex: 1;
-  padding: var(--spacing-6);
+  padding: var(--page-padding);
   overflow-y: auto;
+  position: relative;
+  z-index: 1;
+  transition: padding var(--transition-posture);
+  padding-bottom: 72px; /* space for bottom nav */
 }
 
-/* Wide Desktop (≥1200px) — 사이드바 넓게, 콘텐츠 여유롭게 */
-@media (min-width: 1200px) {
-  .content {
-    padding: var(--spacing-8) var(--spacing-10);
-  }
+/* Ambient glow — pseudo element behind content */
+.glow {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--glow-color);
+  opacity: var(--glow-opacity);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  transition:
+    background var(--transition-posture),
+    opacity var(--transition-posture);
 }
 
-/* Compact Window (<800px) — 사이드바 → 하단 탭 바로 전환 */
-@media (max-width: 799px) {
-  .shell {
-    flex-direction: column;
-  }
+/* Focus state: glow breathes */
+[data-posture="focus"] .glow {
+  animation: breathe 4s ease-in-out infinite;
+}
 
-  .content {
-    flex: 1;
-    padding: var(--spacing-4);
-    padding-bottom: var(--spacing-16); /* 하단 탭 바 높이만큼 여유 */
-  }
+/* Break state: glow breathes slower */
+[data-posture="break"] .glow {
+  animation: breatheSlow 6s ease-in-out infinite;
+}
+
+/* Complete state: glow release pulse */
+[data-posture="complete"] .glow {
+  opacity: 0.18;
 }

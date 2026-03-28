@@ -32,6 +32,8 @@
     "src/domain/sessions/session-transitions.ts",
     "src/features/goals/goal-service.ts",
     "src/platform/browser/in-memory-statistics-adapter.ts",
-    "src/domain/statistics/statistics.ts"
+    "src/domain/statistics/statistics.ts",
+    "src/domain/statistics/statistics-mappers.ts",
+    "src/features/session/state/derivePosture.ts"
   ]
 }

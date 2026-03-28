@@ -2,9 +2,9 @@ import { NavLink } from "react-router";
 import styles from "./MainNavigation.module.css";
 
 const NAV_ITEMS = [
-  { to: "/", label: "홈", icon: "🏠" },
-  { to: "/topics", label: "주제", icon: "📚" },
-  { to: "/stats", label: "통계", icon: "📊" },
+  { to: "/", label: "홈", icon: "⏱" },
+  { to: "/topics", label: "주제", icon: "★" },
+  { to: "/stats", label: "통계", icon: "▦" },
 ] as const;
 
 export function MainNavigation() {
